@@ -1,11 +1,14 @@
-<script>
+<script lang="ts">
     import { CircleUserRound, Menu } from "lucide-svelte";
+    import { navStore } from "../../stores/navigation-store";
+    
+    const { toggleNav } = navStore;
 </script>
 
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="/" role="button"><Menu /></a>
+            <button class="nav-link NavMenuToggleBtn" on:click={ toggleNav }><Menu /></button>
         </li>
     </ul>
     <ul class="navbar-nav ml-auto">
@@ -21,3 +24,10 @@
         </li>
     </ul>
 </nav>
+
+<style lang="scss">
+    .NavMenuToggleBtn {
+        border:none;
+        background: transparent;
+    }
+</style>
