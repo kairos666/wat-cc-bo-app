@@ -1,5 +1,40 @@
 <script lang="ts">
     import smallLogo from "$lib/images/AdminLTELogo.webp";
+    import NavItem from "./NavItem.svelte";
+    import NavItemWithSubitems from "./NavItemWithSubitems.svelte";
+
+    type NavItemObj = {
+        href:string
+        label:string
+        faIconString:string[]
+        children: NavItemObj[]
+    }
+
+    const navTree:NavItemObj[] = [
+        { href: "/", label: "Accueil", faIconString: ["fas", "fa-home"], children: [] },
+        { href: "/", label: "Parcours TDV", faIconString: ["fas", "fa-handshake"], children: [] },
+        { href: "/", label: "Documents", faIconString: ["fas", "fa-folder-open"], children: [] },
+        { href: "/", label: "Produits", faIconString: ["fas", "fa-swimming-pool"], children: [
+            { href: "/", label: "Catégories", faIconString: ["fas", "fa-sitemap"], children: [] },
+            { href: "/", label: "Catalogue", faIconString: ["fas", "fa-list"], children: [] },
+            { href: "/", label: "Prix de vente conseillé", faIconString: ["fas", "fa-euro-sign"], children: [] },
+            { href: "/", label: "Prix de vente", faIconString: ["fas", "fa-euro-sign"], children: [] },
+            { href: "/", label: "Conversion devises", faIconString: ["fas", "fa-money-bill"], children: [] }
+        ] },
+        { href: "/", label: "Configuration", faIconString: ["fas", "fa-th"], children: [
+            { href: "/", label: "Partenaires", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Pays", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Langues", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "TVA", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Devises", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Délais de livraison", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Conditions de paiement", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Traductions", faIconString: ["fas", "fa-circle"], children: [] },
+            { href: "/", label: "Applications tierces", faIconString: ["fas", "fa-circle"], children: [] }
+        ] },
+        { href: "/", label: "Astuces", faIconString: ["fas", "fa-comment"], children: [] },
+        { href: "/", label: "Administration", faIconString: ["fas", "fa-cog"], children: [] }
+    ]
 </script>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -10,138 +45,17 @@
     <div class="sidebar os-host-scrollbar-horizontal-hidden">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
-                    <a href="/" class="nav-link active">
-                        <i class="nav-icon fas fa-home"></i>
-                        <p>Accueil</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <i class="nav-icon fas fa-handshake"></i>
-                        <p>Parcours TDV</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <i class="nav-icon fas fa-folder-open"></i>
-                        <p>Documents</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <i class="nav-icon fas fa-swimming-pool"></i>
-                        <p>Produits<i class="right fas fa-angle-left"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="./index.html" class="nav-link">
-                                <i class="fas fa-sitemap nav-icon"></i>
-                                <p>Catégories</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="fas fa-list nav-icon"></i>
-                                <p>Catalogue</p>
-                            </a>
-                        </li>
-                        <li class="nav-header">par pays</li>
-                        <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
-                                <i class="fas fa-euro-sign nav-icon"></i>
-                                <p>Prix de vente conseillé</p>
-                            </a>
-                        </li>
-                        <li class="nav-header">par partenaire</li>
-                        <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
-                                <i class="fas fa-euro-sign nav-icon"></i>
-                                <p>Prix de vente</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="fas fa-money-bill nav-icon"></i>
-                                <p>Conversion devises</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <i class="nav-icon fas fa-th"></i>
-                        <p>Configuration<i class="right fas fa-angle-left"></i></p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="./index.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Partenaires</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Pays</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index3.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Langues</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>TVA</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Devises</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Délais de livraison</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Kits et paiement</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Traductions IHM</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="./index2.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Applications tierces</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/widgets.html" class="nav-link">
-                        <i class="nav-icon fas fa-comment"></i>
-                        <p>Astuces<span class="right badge badge-info">2</span></p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/widgets.html" class="nav-link">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p>Administration</p>
-                    </a>
-                </li>
+                {#each navTree as navItem}
+                    {#if navItem.children.length === 0}
+                        <NavItem {...navItem} />
+                    {:else}
+                        <NavItemWithSubitems {...navItem}>
+                            {#each navItem.children as subNavItem}
+                                <NavItem {...subNavItem} />
+                            {/each}
+                        </NavItemWithSubitems>
+                    {/if}
+                {/each}
             </ul>
         </nav>
     </div>
