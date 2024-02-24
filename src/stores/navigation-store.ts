@@ -8,8 +8,7 @@ export type NavStore = {
         isAuth:boolean
         roles: string[]
         profile: any|null
-    },
-    perspective:'CC'|'NW'
+    }
 }
 
 const initNavigationStore = () => {
@@ -19,8 +18,7 @@ const initNavigationStore = () => {
             isAuth: false,
             roles: [],
             profile: null
-        },
-        perspective: 'NW'
+        }
     }
 
     const store =  writable(initialNavigationStore);
@@ -61,16 +59,12 @@ const initNavigationStore = () => {
             openNav();
         }
     };
-    function goToNW() { console.log('TODO go to NEW WATBOOK perspective') };
-    function goTOCC() { console.log('TODO go to CC perspective') };
 
     return {
         subscribe,
         openNav,
         closeNav,
-        toggleNav,
-        goToNW,
-        goTOCC
+        toggleNav
     }
 }
 
