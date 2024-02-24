@@ -28,6 +28,7 @@
             { type: 'simple-link', href: "/CONFCOM/delivery-cost", label: "Frais de livraison", faIcon: ["fas", "fa-folder-open"] },
             { type: 'simple-link', href: "/CONFCOM/delivery-delay", label: "Délais de livraison", faIcon: ["fas", "fa-folder-open"] },
             { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-folder-open"] },
+            { type: 'simple-link', href: "/CONFCOM/tva", label: "TVAs", faIcon: ["fas", "fa-folder-open"] },
             { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-folder-open"] }
         ] },
     ]
