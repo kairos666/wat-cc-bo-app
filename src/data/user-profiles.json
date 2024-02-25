@@ -1,0 +1,17 @@
+{
+    "admin-tech": {
+        "firstName": "Thibault",
+        "lastName": "Jean-Pierre",
+        "roles": ["user", "admin-tech"]
+    },
+    "admin-func": {
+        "firstName": "Sylvie",
+        "lastName": "Nolenti",
+        "roles": ["user", "admin-func"]
+    },
+    "vendor": {
+        "firstName": "Sam",
+        "lastName": "Fogharty",
+        "roles": ["user", "vendor"]
+    }
+}

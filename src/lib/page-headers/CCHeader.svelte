@@ -4,7 +4,7 @@
     import { navStore } from "../../stores/navigation-store";
     import { goto } from '$app/navigation';
     
-    const { toggleNav } = navStore;
+    const { toggleNav, disconnectUser } = navStore;
 </script>
 
 <nav id="MainHeader" class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -16,7 +16,7 @@
         <PopoverButton><CircleUserRound /><span class="ml-2">Sylvie Nolenti</span></PopoverButton>
         <PopoverPanel style="position: absolute; z-index: 10;">
             <a href="/profile" class="dropdown-item"><i class="fas fa-id-card mr-2"></i>Afficher mon profil</a>
-            <a href="/" class="dropdown-item"><i class="fas fa-power-off mr-2"></i>Se déconnecter</a>
+            <a href="/" on:click={ disconnectUser } class="dropdown-item"><i class="fas fa-power-off mr-2"></i>Se déconnecter</a>
         </PopoverPanel>
     </Popover>
 </nav>

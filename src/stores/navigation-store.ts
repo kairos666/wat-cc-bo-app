@@ -1,24 +1,44 @@
 import { writable } from 'svelte/store';
 import { get } from 'svelte/store';
+import userProfilesData from '../data/user-profiles.json';
 import { browser } from '$app/environment';
+
+const userProfileLocaleStorageTag:string = 'user-profile';
+
+export function getLocallyStoredUserProfile() {
+    if(browser) {
+        const profileString:string|null = localStorage.getItem(userProfileLocaleStorageTag);
+        if(profileString !== null) {
+            try {
+                const userProfile:UserProfile = JSON.parse(profileString);
+                return userProfile;
+            } catch(error) {
+                console.warn('Couldn\'t read user profile');
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    return null;
+}
+
+export type UserProfile = {
+    roles: string[]
+    firstName: string
+    lastName: string
+}
 
 export type NavStore = {
     isNavOpen:boolean,
-    auth: {
-        isAuth:boolean
-        roles: string[]
-        profile: any|null
-    }
+    auth: UserProfile|null
 }
 
 const initNavigationStore = () => {
     const initialNavigationStore:NavStore = {
         isNavOpen: true,
-        auth: {
-            isAuth: false,
-            roles: [],
-            profile: null
-        }
+        auth: getLocallyStoredUserProfile()
     }
 
     const store =  writable(initialNavigationStore);
@@ -59,12 +79,29 @@ const initNavigationStore = () => {
             openNav();
         }
     };
+    function connectUser(userID:string) {
+        // get user profile
+        const userProfile:UserProfile|null = (userProfilesData as any)[userID] ?? null;
+
+        if(userProfile !== null) {8
+            update(state => ({ ...state, profile: { ...userProfile }}));
+            if(browser) localStorage.setItem(userProfileLocaleStorageTag, JSON.stringify(userProfile));
+        } else {
+            disconnectUser();
+        }
+    }
+    function disconnectUser() {
+        update(state => ({ ...state, auth: null }));
+        if(browser) localStorage.setItem(userProfileLocaleStorageTag, "");
+    }
 
     return {
         subscribe,
         openNav,
         closeNav,
-        toggleNav
+        toggleNav,
+        connectUser,
+        disconnectUser
     }
 }
 

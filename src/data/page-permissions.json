@@ -1,0 +1,15 @@
+[
+    { "url": "/profile", "roles": ["user"]},
+    { "url": "/CONFCOM", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/tdv", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/bundle-cc", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/country", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/language", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/currency", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/delivery-cost", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/delivery-delay", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/product-line", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/tva", "roles": ["admin-tech"]},
+    { "url": "/CONFCOM/promotion", "roles": ["admin-tech"]},
+    { "url": "/NEWWATBOOK", "roles": ["admin-tech", "admin-func", "vendor"]}
+]
