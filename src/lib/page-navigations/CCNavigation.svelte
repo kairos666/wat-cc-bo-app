@@ -20,16 +20,16 @@
     const navTree:(GroupWithSubitemsObj|NavItemObj)[] = [
         { type: 'simple-link', href: "/CONFCOM", label: "Accueil", faIcon: ["fas", "fa-home"] },
         { type: 'simple-link', href: "/CONFCOM/tdv", label: "Parcours TDV", faIcon: ["fas", "fa-handshake"] },
-        { type: 'simple-link', href: "/CONFCOM/bundle-cc", label: "Bundle CC", faIcon: ["fas", "fa-folder-open"] },
-        { type: 'group-with-subitems', label: "Contexte", faIcon: ["fas", "fa-folder-open"], children: [
-            { type: 'simple-link', href: "/CONFCOM/country", label: "Pays", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/language", label: "Langues", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/currency", label: "Devises", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/delivery-cost", label: "Frais de livraison", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/delivery-delay", label: "Délais de livraison", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/tva", label: "TVAs", faIcon: ["fas", "fa-folder-open"] },
-            { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-folder-open"] }
+        { type: 'simple-link', href: "/CONFCOM/bundle-cc", label: "Bundle CC", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'group-with-subitems', label: "Contexte", faIcon: ["fas", "fa-atlas"], children: [
+            { type: 'simple-link', href: "/CONFCOM/country", label: "Pays", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/language", label: "Langues", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/currency", label: "Devises", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/delivery-cost", label: "Frais de livraison", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/delivery-delay", label: "Délais de livraison", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/tva", label: "TVAs", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-circle"] }
         ] },
     ]
 </script>
