@@ -1,5 +1,5 @@
 <script lang="ts">
-    import smallLogo from "$lib/images/AdminLTELogo.webp";
+    import smallLogo from "$lib/images/business-model.png";
     import NavItem from "./NavItem.svelte";
     import NavItemWithSubitems from "./NavItemWithSubitems.svelte";
 
