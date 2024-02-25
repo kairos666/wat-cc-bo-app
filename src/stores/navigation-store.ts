@@ -32,13 +32,13 @@ export type UserProfile = {
 
 export type NavStore = {
     isNavOpen:boolean,
-    auth: UserProfile|null
+    profile: UserProfile|null
 }
 
 const initNavigationStore = () => {
     const initialNavigationStore:NavStore = {
         isNavOpen: true,
-        auth: getLocallyStoredUserProfile()
+        profile: getLocallyStoredUserProfile()
     }
 
     const store =  writable(initialNavigationStore);
@@ -91,7 +91,7 @@ const initNavigationStore = () => {
         }
     }
     function disconnectUser() {
-        update(state => ({ ...state, auth: null }));
+        update(state => ({ ...state, profile: null }));
         if(browser) localStorage.setItem(userProfileLocaleStorageTag, "");
     }
 

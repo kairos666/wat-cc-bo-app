@@ -13,7 +13,7 @@
     <button class="PerspectiveBtn PerspectiveBtn-CC" on:click={ () => goto('/CONFCOM') }>CONFCOM</button>
     <button class="PerspectiveBtn PerspectiveBtn-NW" disabled on:click={ () => goto('/NEWWATBOOK') }>NEW WATBOOK</button>
     <Popover style="position: relative;">
-        <PopoverButton><CircleUserRound /><span class="ml-2">Sylvie Nolenti</span></PopoverButton>
+        <PopoverButton><CircleUserRound /><span class="ml-2">{ $navStore.profile?.firstName } { $navStore.profile?.lastName }</span></PopoverButton>
         <PopoverPanel style="position: absolute; z-index: 10;">
             <a href="/profile" class="dropdown-item"><i class="fas fa-id-card mr-2"></i>Afficher mon profil</a>
             <a href="/" on:click={ disconnectUser } class="dropdown-item"><i class="fas fa-power-off mr-2"></i>Se déconnecter</a>
