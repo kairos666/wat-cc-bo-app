@@ -2,6 +2,7 @@
     import { Popover, PopoverButton, PopoverPanel } from "@rgossiaux/svelte-headlessui";
     import { CircleUserRound, Menu } from "lucide-svelte";
     import { navStore } from "../../stores/navigation-store";
+    import { goto } from '$app/navigation';
     
     const { toggleNav } = navStore;
 </script>
@@ -9,12 +10,12 @@
 <nav id="MainHeader" class="main-header navbar navbar-expand navbar-white navbar-light">
     <button class="NavMenuToggleBtn" on:click={ toggleNav }><Menu /></button>
     <span class="NavMenuSpacer"></span>
-    <button class="PerspectiveBtn PerspectiveBtn-CC" disabled>CONFCOM</button>
-    <button class="PerspectiveBtn PerspectiveBtn-NW">NEW WATBOOK</button>
+    <button class="PerspectiveBtn PerspectiveBtn-CC" on:click={ () => goto('/CONFCOM') }>CONFCOM</button>
+    <button class="PerspectiveBtn PerspectiveBtn-NW" disabled on:click={ () => goto('/NEWWATBOOK') }>NEW WATBOOK</button>
     <Popover style="position: relative;">
         <PopoverButton><CircleUserRound /><span class="ml-2">Sylvie Nolenti</span></PopoverButton>
         <PopoverPanel style="position: absolute; z-index: 10;">
-            <a href="/" class="dropdown-item"><i class="fas fa-id-card mr-2"></i>Afficher mon profil</a>
+            <a href="/profile" class="dropdown-item"><i class="fas fa-id-card mr-2"></i>Afficher mon profil</a>
             <a href="/" class="dropdown-item"><i class="fas fa-power-off mr-2"></i>Se déconnecter</a>
         </PopoverPanel>
     </Popover>

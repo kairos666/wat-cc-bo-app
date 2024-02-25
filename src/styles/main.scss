@@ -5,4 +5,8 @@
     padding: 2rem;
     min-height:100vh;
     background-color: var(--page-bg-color);
+
+    &.BasePageWrapper-offset-for-header {
+        padding-top: calc(5.5rem + 1px);
+    }
 }

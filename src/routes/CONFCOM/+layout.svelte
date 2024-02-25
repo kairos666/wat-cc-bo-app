@@ -1,9 +1,9 @@
 <script>
-    import Header from "$lib/page-headers/Header.svelte";
+    import CcHeader from "$lib/page-headers/CCHeader.svelte";
     import CcNavigation from "$lib/page-navigations/CCNavigation.svelte";
 </script>
 
-<Header />
+<CcHeader />
 <CcNavigation />
 <main>
     <slot />

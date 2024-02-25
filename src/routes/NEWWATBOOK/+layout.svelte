@@ -1,9 +1,9 @@
 <script>
-    import Header from "$lib/page-headers/Header.svelte";
+    import NwHeader from "$lib/page-headers/NWHeader.svelte";
     import NwNavigation from "$lib/page-navigations/NWNavigation.svelte";
 </script>
 
-<Header />
+<NwHeader />
 <NwNavigation />
 <main>
     <slot />
