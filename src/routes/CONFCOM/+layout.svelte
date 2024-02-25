@@ -1,8 +1,6 @@
 <script>
     import Header from "$lib/page-headers/Header.svelte";
     import CcNavigation from "$lib/page-navigations/CCNavigation.svelte";
-    import "../../../node_modules/admin-lte/dist/css/adminlte.css";
-    import "../../styles/main.scss";
 </script>
 
 <Header />

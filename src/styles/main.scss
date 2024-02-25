@@ -1,3 +1,8 @@
 @import "variables";
 @import "global-header";
 
+.BasePageWrapper {
+    padding: 2rem;
+    min-height:100vh;
+    background-color: var(--page-bg-color);
+}
