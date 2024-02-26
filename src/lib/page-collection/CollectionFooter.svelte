@@ -10,14 +10,27 @@
     let maxPageIndex:number;
     let isPreviousActive:boolean;
     let isNextActive:boolean;
-    let paginationArr:number[];
+    let paginationArr:(number|null)[];
     $: {
         startIndex = 1 + (index * currentPageCount);
         endIndex = Math.min(currentPageCount + (index * currentPageCount), length);
         maxPageIndex = Math.ceil(length / currentPageCount);
         isPreviousActive = (index > 0);
         isNextActive = (index + 1 < maxPageIndex);
-        paginationArr = new Array(maxPageIndex).fill(null).map((_item, pageIndex) => pageIndex);
+
+        switch(true) {
+            case (maxPageIndex > 8 && index > 2 && index < maxPageIndex - 2):
+                paginationArr = [0, 1, null, index - 2, index - 1, index, index + 1, index + 2, null, maxPageIndex - 1, maxPageIndex];
+                break;
+            case (maxPageIndex > 8 && index <= 2):
+                paginationArr = [0, 1, 2, 3, 4, null, maxPageIndex - 1, maxPageIndex];
+                break;
+            case (maxPageIndex > 8 && index >= maxPageIndex - 2):
+                paginationArr = [0, 1, null, maxPageIndex - 4, maxPageIndex - 3, maxPageIndex - 2, maxPageIndex - 1, maxPageIndex];
+                break;
+            default:
+                paginationArr = new Array(maxPageIndex).fill(null).map((_item, pageIndex) => pageIndex);
+        }
     }
 
     const dispatch = createEventDispatcher();
@@ -36,8 +49,18 @@
     <ul class="pagination mt-2 mb-0">
         <li class="page-item" class:disabled={ !isPreviousActive }><a class="page-link" href="/#" on:click|preventDefault={ () => dispatch('pageIndexChange', index - 1) }>Précédent</a></li>
         {#each paginationArr as paginationItem}
-        <li class="page-item" class:active={ (paginationItem === index) }><a class="page-link" href="/#" on:click|preventDefault={ () => dispatch('pageIndexChange', paginationItem) }>{ paginationItem + 1 }</a></li>
+            {#if paginationItem !== null}
+            <li class="page-item" class:active={ (paginationItem === index) }><a class="page-link" href="/#" on:click|preventDefault={ () => dispatch('pageIndexChange', paginationItem) }>{ paginationItem + 1 }</a></li>
+            {:else}
+            <li class="page-item"><span class="PageSeparator">...</span></li>
+            {/if}
         {/each}
         <li class="page-item" class:disabled={ !isNextActive }><a class="page-link" href="/#" on:click|preventDefault={ () => dispatch('pageIndexChange', index + 1) }>Suivant</a></li>
     </ul>
 </div>
+
+<style lang="scss">
+    .PageSeparator {
+        margin-inline: 0.25rem;
+    }
+</style>
