@@ -1,0 +1,12 @@
+@mixin perspective-button($defaultColor, $activeColor) {
+    opacity:0.25;
+    border-radius: 5px;
+    transition: all 0.3s;
+    color: $defaultColor;
+
+    &:hover, &:focus, &:active, &:disabled {
+        opacity:1;
+        color: white;
+        background-color: $activeColor;
+    }
+}

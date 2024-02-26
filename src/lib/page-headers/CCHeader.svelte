@@ -22,6 +22,13 @@
 </nav>
 
 <style lang="scss">
+    @import "../../styles/mixins";
+    .PerspectiveBtn.PerspectiveBtn-CC {
+        @include perspective-button(var(--cc-dark), var(--cc-light));
+    }
+    .PerspectiveBtn.PerspectiveBtn-NW {
+        @include perspective-button(var(--nw-dark), var(--nw-light));
+    }
     #MainHeader {
         display:flex;
         gap:0.5rem;
@@ -32,29 +39,5 @@
         border:none;
         background: transparent;
         padding: 0.5rem 1rem;
-    }
-
-    .PerspectiveBtn {
-        opacity:0.25;
-        border-radius: 5px;
-        transition: all 0.3s;
-
-        &.PerspectiveBtn-CC {
-            color: var(--cc-dark);
-            &:hover, &:focus, &:active, &:disabled {
-                opacity:1;
-                color: white;
-                background-color: var(--cc-light);
-            }
-        }
-        &.PerspectiveBtn-NW {
-            color: var(--nw-dark);
-
-            &:hover, &:focus, &:active, &:disabled {
-                opacity:1;
-                color: white;
-                background-color: var(--nw-light);
-            }
-        }
     }
 </style>
