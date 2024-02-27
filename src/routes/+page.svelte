@@ -21,11 +21,11 @@
         <form on:submit={ evt => evt.preventDefault() }>
             <div class="form-group">
                 <label for="user-account-email">Adresse email du compte</label>
-                <input type="email" class="form-control" id="user-account-email" name="user-account-email">
+                <input type="email" class="form-control" id="user-account-email" name="user-account-email" autocomplete="username" />
             </div>
             <div class="form-group">
                 <label for="user-account-pwd">Password</label>
-                <input type="password" class="form-control" id="user-account-pwd" name="user-account-pwd">
+                <input type="password" class="form-control" id="user-account-pwd" name="user-account-pwd" autocomplete="current-password" />
             </div>
             <button type="submit" class="btn btn-primary">S'identifier</button>
         </form>        
