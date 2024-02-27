@@ -2,16 +2,19 @@
     "admin-tech": {
         "firstName": "Thibault",
         "lastName": "Jean-Pierre",
+        "email": "thibault.jeanpierre@waterair.fr",
         "roles": ["user", "admin-tech"]
     },
     "admin-func": {
         "firstName": "Sylvie",
         "lastName": "Nolenti",
+        "email": "sylvie.nolenti@waterair.fr",
         "roles": ["user", "admin-func"]
     },
     "vendor": {
         "firstName": "Sam",
         "lastName": "Fogharty",
+        "email": "sam.fogharty@earthwindandfire.com",
         "roles": ["user", "vendor"]
     }
 }
