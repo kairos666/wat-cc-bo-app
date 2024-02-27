@@ -1,24 +1,27 @@
 <script lang="ts">
-    import pagePermissions from "../data/page-permissions.json";
     import { page } from "$app/stores";
     import { goto } from '$app/navigation';
     import { navStore } from "../stores/navigation-store";
+    import { browser } from "$app/environment";
     import "../../node_modules/admin-lte/dist/css/adminlte.css";
     import "../styles/main.scss";
-    import { browser } from "$app/environment";
 
     $: {
         if(browser) {
             // Route guard - trigger at each new page
-            const requiredRoles:string[] = pagePermissions.find(pagePerm => (pagePerm.url === $page.url.pathname))?.roles ?? [];
-            const userRoles:string[] = $navStore.profile?.roles ?? [];
-            const isGuardedRoute:boolean = (requiredRoles.length > 0);
-            const hasPermission:boolean = (isGuardedRoute)
-                ? requiredRoles.some(value => userRoles.includes(value))
-                : true;
+            const newRoute:string = $page.url.pathname;
 
-            // redirect when trying to access forbidden page
-            if(!hasPermission) goto('/', { replaceState: true });
+            switch(true) {
+                case (newRoute === "/"): // auth page always accessible
+                case (newRoute.startsWith('/CONFCOM') && $navStore.hasCCAccess): // all CC routes
+                case (newRoute.startsWith('/NEWWATBOOK') && $navStore.hasNWAccess): // all NW routes
+                case (!newRoute.startsWith('/CONFCOM') && !newRoute.startsWith('/NEWWATBOOK') && $navStore.hasBOAccess): // all transverse BO routes
+                break;
+
+                default:
+                    // otherwise redirect to auth page
+                    goto('/', { replaceState: true });
+            }
         }
     }
 </script>

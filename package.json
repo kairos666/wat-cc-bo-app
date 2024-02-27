@@ -23,6 +23,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@casl/ability": "^6.7.0",
 		"admin-lte": "3.2",
 		"lucide-svelte": "^0.335.0"
 	}

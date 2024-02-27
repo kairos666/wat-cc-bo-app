@@ -35,13 +35,17 @@
         <header>
             <img class="Logo" alt="waterair, tout commence par le bon choix" src={ bigLogo } />
         </header>
+        {#if $navStore.hasCCAccess}
         <h2>CONFCOM</h2>
         <p>Administrer le configurateur commercial WATERAIR</p>
         <a href="/CONFCOM" class="btn btn-primary btn-lg CCBtn">aller sur CONFCOM</a>
-        <hr />
+        {/if}
+        {#if $navStore.hasCCAccess && $navStore.hasNWAccess}<hr />{/if}
+        {#if $navStore.hasNWAccess}
         <h2>NEW WATBOOK</h2>
         <p>Administrer NEW WATBOOK pour synchroniser ensuite les tablettes</p>
         <a href="/NEWWATBOOK" class="btn btn-primary btn-lg NWBtn">aller sur NEW WATBOOK</a>
+        {/if}
     </article>
     {/if}
     <menu class="MockMenu">
