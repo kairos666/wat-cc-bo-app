@@ -1,7 +1,16 @@
-<script>
-
+<script lang="ts">
     import BccCard from "$lib/bcc-components/BCCCard.svelte";
 
+    const bccData:any[] = [
+        { state: "actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
+        { state:"initié", name:"Nouveau BCC", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false },
+        { state:"nettoyé & typé", name:"BCC printemps 2025 bis", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true },
+        { state:"nettoyé & typé", name:"BCC printemps 2025", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false },
+        { state:"modélisé", name:"BCC printemps 2025 alternative", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        { state:"enrichi", name:"BCC hiver 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        { state:"validé", name:"BCC printemps 2024 bis", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        { state:"archivé", name:"BCC hiver 2023", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false },
+    ]
 </script>
 <svelte:head>
 	<title>CONFCOM - BCC</title>
@@ -36,19 +45,23 @@
             </div>
             <div class="row">
                 <div class="col-lg-3">
-                    <h4 class="mt-4">BCC version active</h4>
-                    <BccCard state="actif" name="BCC printemps 2024" />
-                    <h4 class="mt-4">BCC version précédente</h4>
-                    <BccCard state="archivé" name="BCC hiver 2023" />
+                    <div class="BCCMainBox">
+                        <h4>BCC version active</h4>
+                        {#each bccData.filter(bcc => (bcc.state === "actif")) as bcc}
+                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } activated={ bcc.activated } isLoading={ bcc.isLoading }/>
+                        {/each}
+                        <h4 class="mt-4">BCC version précédente</h4>
+                        {#each bccData.filter(bcc => (bcc.state === "archivé")) as bcc}
+                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading }/>
+                        {/each}
+                    </div>
                 </div>
-                <div class="col-lg-1"></div>
-                <div class="col-lg-8">
-                    <h4 class="mt-4">BCC en cours d'élaboration</h4>
+                <div class="col-lg-9">
+                    <h4 class="mt-2">BCC en cours d'élaboration</h4>
                     <ul class="BCCLayout">
-                        <li><BccCard state="initié" name="Nouveau BCC" /></li>
-                        <li><BccCard state="nettoyé & typé" name="BCC printemps 2025" /></li>
-                        <li><BccCard state="enrichi" name="BCC hiver 2024" /></li>
-                        <li><BccCard state="validé" name="BCC printemps 2024 bis" /></li>
+                        {#each bccData.filter(bcc => (bcc.state !== "actif" && bcc.state !== "archivé")) as bcc}
+                        <li><BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading }/></li>
+                        {/each}
                     </ul>
                 </div>
             </div>
@@ -57,12 +70,19 @@
 </div>
 
 <style lang="scss">
+    .BCCMainBox {
+        padding:0.75rem;
+        background-color: white;
+        border-radius: 0.25rem;
+        margin-inline-end: 1rem;
+    }
     .BCCLayout {
         padding-inline-start: 0;
         margin-block-end: 0;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         grid-template-rows: repeat(auto-fill, auto);
+        align-items: stretch;
         gap: 1rem;
         > li { 
             list-style: none; 
