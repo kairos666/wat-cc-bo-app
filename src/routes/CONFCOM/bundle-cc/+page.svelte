@@ -2,22 +2,22 @@
     import BccCard from "$lib/bcc-components/BCCCard.svelte";
 
     const bccData:any[] = [
-        { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
-        { state:"initié", name:"Nouveau BCC", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false },
-        { state:"nettoyé & typé", name:"BCC printemps 2025 bis", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true },
-        { state:"nettoyé & typé", name:"BCC printemps 2025", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false },
-        { state:"modélisé", name:"BCC printemps 2025 alternative", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        { state:"enrichi", name:"BCC hiver 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        { state:"validé", name:"BCC printemps 2024 bis", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        { state:"archivé", name:"BCC hiver 2023", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false },
-        // { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
-        // { state:"initié", name:"BCC printemps 2024", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false },
-        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true },
-        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false },
-        // { state:"modélisé", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        // { state:"enrichi", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        // { state:"validé", name:"BCC printemps 2024", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
-        // { state:"archivé", name:"BCC printemps 2024", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false },
+        { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false, isWorkInstance: true },
+        { state:"initié", name:"Nouveau BCC", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false, isWorkInstance: true },
+        { state:"nettoyé & typé", name:"BCC printemps 2025 bis", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true, isWorkInstance: true },
+        { state:"nettoyé & typé", name:"BCC printemps 2025", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false, isWorkInstance: true },
+        { state:"modélisé", name:"BCC printemps 2025 alternative", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        { state:"prêt", name:"BCC hiver 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        // { state:"validé", name:"BCC printemps 2024 bis", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        { state:"archivé", name:"BCC hiver 2023", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false, isWorkInstance: true },
+        // { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false, isWorkInstance: true },
+        // { state:"initié", name:"BCC printemps 2024", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false, isWorkInstance: true },
+        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true, isWorkInstance: true },
+        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false, isWorkInstance: true },
+        // { state:"prêt", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        // { state:"enrichi", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        // { state:"validé", name:"BCC printemps 2024", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false, isWorkInstance: true },
+        // { state:"archivé", name:"BCC printemps 2024", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false, isWorkInstance: true },
     ]
 </script>
 <svelte:head>
@@ -56,11 +56,11 @@
                     <div class="BCCMainBox">
                         <h4>BCC version active</h4>
                         {#each bccData.filter(bcc => (bcc.state === "actif")) as bcc}
-                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } activated={ bcc.activated } isLoading={ bcc.isLoading }/>
+                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } activated={ bcc.activated } isLoading={ bcc.isLoading } isWorkInstance={ bcc.isWorkInstance }/>
                         {/each}
                         <h4 class="mt-4">BCC version précédente</h4>
                         {#each bccData.filter(bcc => (bcc.state === "archivé")) as bcc}
-                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading }/>
+                        <BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading } isWorkInstance={ bcc.isWorkInstance }/>
                         {/each}
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                     <h4 class="mt-2">BCC en cours d'élaboration</h4>
                     <ul class="BCCLayout">
                         {#each bccData.filter(bcc => (bcc.state !== "actif" && bcc.state !== "archivé")) as bcc}
-                        <li><BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading }/></li>
+                        <li><BccCard state={ bcc.state } name={ bcc.name } created={ bcc.created } extractSAP={ bcc.extractSAP } isLoading={ bcc.isLoading } isWorkInstance={ bcc.isWorkInstance }/></li>
                         {/each}
                     </ul>
                 </div>

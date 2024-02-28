@@ -1,64 +1,86 @@
 <script lang="ts">
     export let name:string
-    export let state:'initié'|'nettoyé & typé'|'modélisé'|'enrichi'|'validé'|'actif'|'archivé';
+    export let state:'initié'|'nettoyé & typé'|'modélisé'|'prêt'|'actif'|'archivé';
+    export let isWorkInstance:boolean = false;
     export let isLoading:boolean = false;
     export let created:string
     export let extractSAP:string
     export let activated:string|null = null;
 
-    let hasTest:boolean;
-    let hasEdit:boolean;
-    let hasClone:boolean;
-    let hasDelete:boolean;
-    let hasModel:boolean;
-    let hasValidate:boolean;
-    let hasActivate:boolean;
-    let hasRollback:boolean;
+    let hasTest:string|null;
+    let hasEdit:string|null;
+    let hasClone:string|null;
+    let hasDelete:string|null;
+    let hasModel:string|null;
+    let hasActivate:string|null;
+    let hasLoadAsWorkInstance:string|null;
+    let badgeColorString:'badge-warning'|'badge-success'|'badge-light';
     $: {
+        switch(true) {
+            case (state === 'initié' && isWorkInstance):
+            hasTest = hasActivate = hasClone = hasLoadAsWorkInstance = null;
+            hasEdit = "Filtrer et typer";
+            hasModel = "Modéliser";
+            hasDelete = "Supprimer";
+            break;
+
+            case (state === 'nettoyé & typé' && isWorkInstance):
+            hasTest = hasActivate = hasClone = hasLoadAsWorkInstance = null;
+            hasEdit = "Filtrer et typer";
+            hasModel = "Modéliser";
+            hasDelete = "Supprimer";
+            break;
+
+            case (state === 'modélisé' && isWorkInstance):
+            hasTest = hasActivate = hasModel = hasLoadAsWorkInstance = null;
+            hasEdit = "Enrichir";
+            hasClone = "Dupliquer";
+            hasDelete = "Supprimer";
+            break;
+
+            case (state === 'prêt' && isWorkInstance):
+            hasModel = hasLoadAsWorkInstance = null;
+            hasTest = "Tester";
+            hasEdit = "Enrichir";
+            hasClone = "Dupliquer";
+            hasDelete = "Supprimer";
+            hasActivate = "Activer";
+            break;
+
+            case (state === 'actif' && isWorkInstance):
+            hasActivate = hasModel = hasEdit = hasDelete = hasLoadAsWorkInstance = null;
+            hasTest = "Tester";
+            hasClone = "Dupliquer";
+            break;
+
+            case (state === 'archivé' && isWorkInstance):
+            hasActivate = hasModel = hasEdit = hasDelete = hasLoadAsWorkInstance = null;
+            hasTest = "Tester";
+            hasClone = "Dupliquer";
+            break;
+
+            default:
+                hasActivate = hasModel = hasEdit = hasDelete = hasTest = hasClone = null;
+                hasLoadAsWorkInstance = "Charger";
+        }
+
         switch(state) {
-            case 'initié':
-            hasTest = hasValidate = hasActivate = hasRollback = hasClone = false;
-            hasEdit = hasModel = hasDelete = true;
-            break;
-
-            case 'nettoyé & typé':
-            hasTest = hasValidate = hasActivate = hasRollback = hasClone = false;
-            hasEdit = hasModel = hasDelete = true;
-            break;
-
-            case 'modélisé':
-            hasTest = hasValidate = hasActivate = hasRollback = hasModel = false;
-            hasEdit = hasClone = hasDelete = true;
-            break;
-
-            case 'enrichi':
-            hasActivate = hasRollback = hasModel = false;
-            hasValidate = hasTest = hasEdit = hasClone = hasDelete = true;
-            break;
-
-            case 'validé':
-            hasValidate = hasRollback = hasModel = hasEdit = false;
-            hasActivate = hasTest = hasClone = hasDelete = true;
-            break;
-
-            case 'actif':
-            hasActivate = hasValidate = hasRollback = hasModel = hasEdit = hasDelete = false;
-            hasTest = hasClone = true;
-            break;
-
-            case 'archivé':
-            hasActivate = hasValidate = hasModel = hasEdit = hasDelete = false;
-            hasRollback = hasTest = hasClone = true;
-            break;
+            case 'initié': badgeColorString = 'badge-light'; break;
+            case 'nettoyé & typé': badgeColorString = (isLoading) ? 'badge-light' : 'badge-warning'; break;
+            case 'modélisé': badgeColorString = 'badge-light'; break;
+            case 'prêt': badgeColorString = 'badge-success'; break;
+            case 'actif': badgeColorString = 'badge-light'; break;
+            case 'archivé': badgeColorString = 'badge-light'; break;
         }
     }
 </script>
 
-<div class="card" class:card-success={ state === 'actif' || state === 'validé' } class:card-outline={ state === 'validé' } class:card-secondary={ state === "archivé" }>
+<div class="card" class:card-success={ state === 'actif' || state === 'prêt' } class:card-outline={ state === 'prêt' } class:card-secondary={ state === "archivé" }>
     <div class="card-header">
         <h3 class="card-title">{ name }</h3>
         <div class="card-tools">
-            <span class={ (state === "nettoyé & typé" && !isLoading) ? "badge badge-warning" : "badge badge-light" }>{ state }</span>
+            {#if isWorkInstance}<span class="badge badge-primary">chargé</span>{/if}
+            <span class={ `badge ${ badgeColorString }` }>{ state }</span>
         </div>
     </div>
     <div class="card-body">
@@ -67,18 +89,17 @@
             <dt>Date d'extraction SAP</dt><dd>{ extractSAP }</dd>
             {#if activated}<dt>Date d'activation CONFCOM</dt><dd>{ activated }</dd>{/if}
         </dl>
-        {#if (state === "nettoyé & typé" && !isLoading)}<p class="alert alert-warning" role="alert">Une erreur s'est produite lors de la modélisation.<br />Vérifiez les filtres et types et réessayez de modéliser.</p>{/if}
+        {#if (state === "nettoyé & typé" && !isLoading)}<p class="alert alert-warning" role="alert">Seuls 97% des données ont pu être traitées<br />Complétez les filtres et types et réessayez de modéliser.</p>{/if}
     </div>
     {#if !isLoading}
     <div class="card-footer">
-        {#if hasModel}<button type="button" class="btn btn-outline-success btn-sm">Modéliser</button>{/if}
-        {#if hasValidate}<button type="button" class="btn btn-outline-success btn-sm">Valider</button>{/if}
-        {#if hasActivate}<button type="button" class="btn btn-outline-success btn-sm">Remplacer actif</button>{/if}
-        {#if hasRollback}<button type="button" class="btn btn-outline-warning btn-sm">Rollback</button>{/if}
-        {#if hasEdit}<a href="/#" class="btn btn-light btn-sm" role="button">Modifier</a>{/if}
-        {#if hasTest}<a href="/#" class="btn btn-light btn-sm" role="button">Tester</a>{/if}
-        {#if hasClone}<button type="button" class="btn btn-light btn-sm">Cloner</button>{/if}
-        {#if hasDelete}<button type="button" class="btn btn-outline-danger btn-sm">Supprimer</button>{/if}
+        {#if hasLoadAsWorkInstance}<button type="button" class="btn btn-outline-primary btn-sm">{ hasLoadAsWorkInstance }</button>{/if}
+        {#if hasModel}<button type="button" class="btn btn-outline-success btn-sm">{ hasModel }</button>{/if}
+        {#if hasActivate}<button type="button" class="btn btn-outline-success btn-sm">{ hasActivate }</button>{/if}
+        {#if hasTest}<a href="/#" class="btn btn-light btn-sm" role="button">{ hasTest }</a>{/if}
+        {#if hasEdit}<a href="/#" class="btn btn-light btn-sm" role="button">{ hasEdit }</a>{/if}
+        {#if hasClone}<button type="button" class="btn btn-light btn-sm">{ hasClone }</button>{/if}
+        {#if hasDelete}<button type="button" class="btn btn-outline-danger btn-sm">{ hasDelete }</button>{/if}
     </div>
     {:else}
     <div class="overlay">
