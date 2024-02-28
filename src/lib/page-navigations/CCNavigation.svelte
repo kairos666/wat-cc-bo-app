@@ -20,7 +20,7 @@
     const navTree:(GroupWithSubitemsObj|NavItemObj)[] = [
         { type: 'simple-link', href: "/CONFCOM", label: "Accueil", faIcon: ["fas", "fa-home"] },
         { type: 'simple-link', href: "/CONFCOM/tdv", label: "Parcours TDV", faIcon: ["fas", "fa-handshake"] },
-        { type: 'simple-link', href: "/CONFCOM/bundle-cc", label: "Bundle CC", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'simple-link', href: "/CONFCOM/bundle-cc", label: "BCC", faIcon: ["fas", "fa-digital-tachograph"] },
         { type: 'group-with-subitems', label: "Contexte", faIcon: ["fas", "fa-atlas"], children: [
             { type: 'simple-link', href: "/CONFCOM/country", label: "Pays", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/language", label: "Langues", faIcon: ["fas", "fa-circle"] },
