@@ -2,7 +2,7 @@
     import BccCard from "$lib/bcc-components/BCCCard.svelte";
 
     const bccData:any[] = [
-        { state: "actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
+        { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
         { state:"initié", name:"Nouveau BCC", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false },
         { state:"nettoyé & typé", name:"BCC printemps 2025 bis", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true },
         { state:"nettoyé & typé", name:"BCC printemps 2025", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false },
@@ -10,6 +10,14 @@
         { state:"enrichi", name:"BCC hiver 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
         { state:"validé", name:"BCC printemps 2024 bis", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
         { state:"archivé", name:"BCC hiver 2023", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false },
+        // { state:"actif", name: "BCC printemps 2024", created: "27/11/2023 11:23", extractSAP: "24/11/2023 02:01", activated: "05/01/2024 17:25", isLoading: false },
+        // { state:"initié", name:"BCC printemps 2024", created: "28/02/2024 11:23", extractSAP: "24/11/2023 02:01", isLoading: false },
+        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: true },
+        // { state:"nettoyé & typé", name:"BCC printemps 2024", created: "27/01/2024 15:01", extractSAP: "24/11/2023 02:01", isLoading: false },
+        // { state:"modélisé", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        // { state:"enrichi", name:"BCC printemps 2024", created: "02/06/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        // { state:"validé", name:"BCC printemps 2024", created: "02/08/2023 11:23", extractSAP: "24/02/2023 04:30", isLoading: false },
+        // { state:"archivé", name:"BCC printemps 2024", created: "22/03/2023 11:23", extractSAP: "24/11/2022 02:01", isLoading: false },
     ]
 </script>
 <svelte:head>

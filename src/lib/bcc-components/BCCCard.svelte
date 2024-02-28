@@ -17,8 +17,8 @@
     $: {
         switch(state) {
             case 'initié':
-            hasTest = hasValidate = hasActivate = hasRollback = false;
-            hasEdit = hasClone = hasModel = hasDelete = true;
+            hasTest = hasValidate = hasActivate = hasRollback = hasClone = false;
+            hasEdit = hasModel = hasDelete = true;
             break;
 
             case 'nettoyé & typé':
