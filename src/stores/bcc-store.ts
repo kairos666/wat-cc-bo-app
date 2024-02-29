@@ -157,6 +157,8 @@ export async function bccEnrichAction(bccID:number) {
         throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
     }
 }
+// modélisé/prêt --> archivé (manuel = Archiver)
+// archivé --> modélisé/prêt (manuel = Sortir de l'archive)
 // enrichi --> actif (manuel = Activer)
 //TODO
 // isWorkingInstance false --> true (manuel = Charger (false tous les autres))

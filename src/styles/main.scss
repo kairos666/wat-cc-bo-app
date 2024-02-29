@@ -11,3 +11,16 @@
         padding-top: calc(5.5rem + 1px);
     }
 }
+
+// custom BCCManager - tabs override
+#BCCManager {
+    .TabGroup {
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        height:100%;
+
+        .TabList { flex:0 0 auto; }
+        .TabPanels { flex:1 1 auto; }
+    }
+}
