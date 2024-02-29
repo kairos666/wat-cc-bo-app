@@ -1,7 +1,6 @@
 <script lang="ts">
     import smallLogo from "$lib/images/business-model.png";
     import BccManager from "$lib/bcc-components/BCCManager.svelte";
-import { bccDelete, bccDuplicate, bccEnrichAction, bccModelizeAction, getAllBccs } from "../../stores/bcc-store";
 </script>
 <svelte:head>
 	<title>CONFCOM - Accueil</title>
@@ -37,20 +36,6 @@ import { bccDelete, bccDuplicate, bccEnrichAction, bccModelizeAction, getAllBccs
             <div class="row">
                 <div class="col-lg-12">
                     <BccManager />
-                    <!-- <ol>
-                        {#each $getAllBccs ?? [] as bcc}
-                        <li>
-                            <p>{ bcc.name } | { bcc.state } | { bcc.created }</p>
-                            <button on:click={ () => bccDelete(bcc.id) }>supprimer</button>
-                            <button on:click={ () => bccDuplicate(`clone de ${ bcc.name }`, bcc.id) }>dupliquer</button>
-                            <button on:click={ () => bccModelizeAction(bcc.id) }>modéliser</button>
-                            <button on:click={ () => bccEnrichAction(bcc.id) }>enrichir</button>
-                        </li>
-                        {:else}
-                        <li>no bcc</li>                          
-                        {/each}
-                    </ol>
-                    <button on:click={ () => createBccDialog.triggerOpenDialog() }>create BCC</button> -->
                 </div>
             </div>
         </div>

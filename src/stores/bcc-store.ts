@@ -158,8 +158,82 @@ export async function bccEnrichAction(bccID:number) {
     }
 }
 // modélisé/prêt --> archivé (manuel = Archiver)
+export async function bccArchiveAction(bccID:number) {
+    try {
+        const targetBcc:BccMetaData = await getBCCByID(bccID);
+        if(targetBcc.state !== 'modélisé' && targetBcc.state !== 'prêt') throw new Error(`Forbidden to archive BCC with ${ targetBcc.state } state`);
+
+        const formerState:BccState = targetBcc.state;
+        await db.bccs.update(bccID, { state: "archivé" });
+        
+        console.info(`BCC "${ bccID }" ARCHIVED (from = ${ formerState }, to = archivé`);
+    } catch (error) {
+        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+    }
+}
 // archivé --> modélisé/prêt (manuel = Sortir de l'archive)
-// enrichi --> actif (manuel = Activer)
-//TODO
+export async function bccUnarchiveAction(bccID:number) {
+    try {
+        const targetBcc:BccMetaData = await getBCCByID(bccID);
+        if(targetBcc.state !== 'archivé') throw new Error(`Forbidden to unarchive BCC with ${ targetBcc.state } state`);
+
+        await db.bccs.update(bccID, { state: 'modélisé' });
+        await bccEnrichAction(bccID); // evaluate enrichment
+        
+        console.info(`BCC "${ bccID }" UNARCHIVED (from = archivé, to = modélisé ou prêt`);
+    } catch (error) {
+        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+    }
+}
+// prêt --> actif (manuel = Activer)
+export async function bccActivateAction(bccID:number) {
+    try {
+        // prepare bulk update on all BCC (only one active at a time)
+        type BulkChangeItem = { key:number, changes: { state:BccState } };
+        const allBCC:BccMetaData[] = await db.bccs.orderBy('created').toArray();
+        const bulkChanges:BulkChangeItem[] = allBCC.reduce((acc, curr) => {
+            switch(true) {
+                case (curr.id === bccID && curr.state === 'actif'):
+                    throw new Error(`BCC #${ bccID } is already active`);
+                case (curr.id === bccID && curr.state !== 'prêt'):
+                    throw new Error(`BCC #${ bccID } can't be activated it is not ready`);
+                case (curr.id === bccID && curr.state === 'prêt'):
+                    return [...acc, { key: curr.id, changes: { state: 'actif' } }];
+                case (curr.id !== bccID && curr.state === 'actif'):
+                    return [...acc, { key: curr.id, changes: { state: 'prêt' } }];
+                default:
+                    return acc;
+            }
+        }, ([] as BulkChangeItem[]));
+        await db.bccs.bulkUpdate(bulkChanges);
+
+        console.info(`BCC "${ bccID }" was ACTIVATED`);
+    } catch (error) {
+        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+    }
+}
 // isWorkingInstance false --> true (manuel = Charger (false tous les autres))
-//TODO
+export async function bccLoadAction(bccID:number) {
+    try {
+        // prepare bulk update on all BCC (unload loaded one and load targeted one)
+        type BulkChangeItem = { key:number, changes: { isWorkingInstance:boolean } };
+        const allBCC:BccMetaData[] = await db.bccs.orderBy('created').toArray();
+        const bulkChanges:BulkChangeItem[] = allBCC.reduce((acc, curr) => {
+            switch(true) {
+                case (curr.isWorkingInstance && curr.id === bccID):
+                    throw new Error(`BCC #${ bccID } is already loaded`);
+                case (curr.isWorkingInstance && curr.id !== bccID):
+                    return [...acc, { key: curr.id, changes: { isWorkingInstance: false } }];
+                case (!curr.isWorkingInstance && curr.id === bccID):
+                    return [...acc, { key: curr.id, changes: { isWorkingInstance: true } }];
+                default:
+                    return acc;
+            }
+        }, ([] as BulkChangeItem[]));
+        await db.bccs.bulkUpdate(bulkChanges);
+        
+        console.info(`BCC "${ bccID }" was LOADED`);
+    } catch (error) {
+        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+    }
+}

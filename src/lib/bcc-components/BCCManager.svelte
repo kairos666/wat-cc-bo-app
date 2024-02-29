@@ -1,10 +1,18 @@
 <script lang="ts">
     import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@rgossiaux/svelte-headlessui";
-    import { bccDelete, bccDuplicate, bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
+    import { bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData, bccLoadAction, bccActivateAction } from "../../stores/bcc-store";
     import DialogCreateBcc from "$lib/bcc-components/DialogCreateBCC.svelte";
     import { format } from "date-fns";
+    import DialogDuplicateBcc from "./DialogDuplicateBCC.svelte";
+    import DialogDeleteConfirmBcc from "./DialogDeleteConfirmBCC.svelte";
+    import DialogArchiveConfirmBcc from "./DialogArchiveConfirmBCC.svelte";
+    import DialogUnarchiveConfirmBcc from "./DialogUnarchiveConfirmBCC.svelte";
 
     let createBccDialog:any;
+    let duplicateBccDialog:any;
+    let deleteBccDialog:any;
+    let archiveBccDialog:any;
+    let unarchiveBccDialog:any;
     let activeBCC:BccMetaData|null = null;
     let loadedBCC:BccMetaData|null = null;
     let allNonArchived:BccMetaData[] = [];
@@ -23,11 +31,11 @@
         <h2 class="mb-3">BCC chargé</h2>
         {#if loadedBCC}
         <div class="info-box bg-info">
-            <span class="info-box-icon"><i class="fas fa-download"></i></span>
+            <span class="info-box-icon"><i class="fas fa-tools"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{ loadedBCC.name } (#{ loadedBCC.id })</span>
-                <span class="info-box-number">créé le { loadedBCC.created }</span>
-                <span class="info-box-number">données SAP { loadedBCC.extractedSapData }</span>
+                <span class="info-box-number">{ loadedBCC.name } (#{ loadedBCC.id })</span>
+                <span class="info-box-text"><i>créé le :</i> { format(new Date(loadedBCC.created), "dd/MM/yyyy HH:mm") }</span>
+                <span class="info-box-text"><i>données SAP :</i> { format(new Date(loadedBCC.extractedSapData), "dd/MM/yyyy HH:mm") }</span>
             </div>
         </div>
         {:else}
@@ -42,9 +50,9 @@
         <div class="info-box bg-success">
             <span class="info-box-icon"><i class="fab fa-creative-commons"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text">{ activeBCC.name } (#{ activeBCC.id })</span>
-                <span class="info-box-number">créé le { format(new Date(activeBCC.created), "dd/MM/yyyy HH:mm") }</span>
-                <span class="info-box-number">données SAP { format(new Date(activeBCC.extractedSapData), "dd/MM/yyyy HH:mm") }</span>
+                <span class="info-box-number">{ activeBCC.name } (#{ activeBCC.id })</span>
+                <span class="info-box-text"><i>créé le :</i> { format(new Date(activeBCC.created), "dd/MM/yyyy HH:mm") }</span>
+                <span class="info-box-text"><i>données SAP :</i> { format(new Date(activeBCC.extractedSapData), "dd/MM/yyyy HH:mm") }</span>
                 {#if activeBCC.activated}<span class="info-box-number">activé le { format(new Date(activeBCC.activated), "dd/MM/yyyy HH:mm") }</span>{/if}
             </div>
         </div>
@@ -91,10 +99,13 @@
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
                                     <menu class="BCCRowActions">
-                                        <button class="btn btn-danger btn-sm" on:click={ () => bccDelete(bcc.id) }>Supprimer</button>
-                                        <button class="btn btn-light btn-sm" on:click={ () => bccDuplicate(`clone de ${ bcc.name }`, bcc.id) }>Dupliquer</button>
+                                        <button class="btn btn-danger btn-sm" on:click={ () => deleteBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Supprimer</button>
+                                        <button class="btn btn-light btn-sm" on:click={ () => duplicateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Dupliquer</button>
+                                        <button class="btn btn-dark btn-sm" on:click={ () => archiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Archiver</button>
                                         <button class="btn btn-success btn-sm" on:click={ () => bccModelizeAction(bcc.id) }>Modéliser</button>
                                         <button class="btn btn-success btn-sm" on:click={ () => bccEnrichAction(bcc.id) }>Enrichir</button>
+                                        <button class="btn btn-primary btn-sm" on:click={ () => bccLoadAction(bcc.id) }>Charger</button>
+                                        <button class="btn btn-primary btn-sm" on:click={ () => bccActivateAction(bcc.id) }>Activer</button>
                                     </menu>
                                 </td>
                             </tr>
@@ -130,7 +141,8 @@
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
                                     <menu class="BCCRowActions">
-                                        <button class="btn btn-warning btn-sm">Sortir de l'archive</button>
+                                        <button class="btn btn-danger btn-sm" on:click={ () => deleteBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Supprimer</button>
+                                        <button class="btn btn-warning btn-sm" on:click={ () => unarchiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Sortir de l'archive</button>
                                     </menu>
                                 </td>
                             </tr>
@@ -143,10 +155,14 @@
         </TabGroup>
     </section>
     <footer id="BCCManager_Footer">
-        <button class="btn btn-outline-success btn-lg" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC (extraction SAP)</button>
+        <button class="btn btn-success btn-lg" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC (extraction SAP)</button>
     </footer>
 </article>
 <DialogCreateBcc bind:this={ createBccDialog } />
+<DialogDuplicateBcc bind:this={ duplicateBccDialog } />
+<DialogDeleteConfirmBcc bind:this={ deleteBccDialog } />
+<DialogArchiveConfirmBcc bind:this={ archiveBccDialog }/>
+<DialogUnarchiveConfirmBcc bind:this={ unarchiveBccDialog }/>
 
 <style lang="scss">
     #BCCManager {
