@@ -1,3 +1,10 @@
+<script lang="ts">
+    import DialogCreateBcc from "$lib/bcc-components/DialogCreateBCC.svelte";
+    import { bccDelete, bccDuplicate, bccEnrichAction, bccModelizeAction, getAllBccs } from "../../stores/bcc-store";
+    
+
+    let createBccDialog:any;
+</script>
 <svelte:head>
 	<title>CONFCOM - Accueil</title>
 </svelte:head>
@@ -21,9 +28,23 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Lorem ipsum</p>
+                    <ol>
+                        {#each $getAllBccs ?? [] as bcc}
+                        <li>
+                            <p>{ bcc.name } | { bcc.state } | { bcc.created }</p>
+                            <button on:click={ () => bccDelete(bcc.id) }>supprimer</button>
+                            <button on:click={ () => bccDuplicate(`clone de ${ bcc.name }`, bcc.id) }>dupliquer</button>
+                            <button on:click={ () => bccModelizeAction(bcc.id) }>modéliser</button>
+                            <button on:click={ () => bccEnrichAction(bcc.id) }>enrichir</button>
+                        </li>
+                        {:else}
+                        <li>no bcc</li>                          
+                        {/each}
+                    </ol>
+                    <button on:click={ () => createBccDialog.triggerOpenDialog() }>create BCC</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<DialogCreateBcc bind:this={ createBccDialog } />

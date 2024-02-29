@@ -1,6 +1,8 @@
 <script lang="ts">
+    import type { BccState } from "../../stores/bcc-store";
+
     export let name:string
-    export let state:'initié'|'nettoyé & typé'|'modélisé'|'prêt'|'actif'|'archivé';
+    export let state:BccState;
     export let isWorkInstance:boolean = false;
     export let isLoading:boolean = false;
     export let created:string
