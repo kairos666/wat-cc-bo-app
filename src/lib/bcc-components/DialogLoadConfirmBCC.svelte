@@ -1,10 +1,10 @@
 <script lang="ts">
     import { Dialog, DialogDescription, DialogOverlay, DialogTitle } from "@rgossiaux/svelte-headlessui";
-    import { bccUnarchiveAction } from "../../stores/bcc-store";
+    import { bccLoadAction } from "../../stores/bcc-store";
 
-    export function triggerOpenDialog(unarchiveTargetId:number, unarchiveTargetName:string) {
-        targetBccName = unarchiveTargetName;
-        targetBccId = unarchiveTargetId;
+    export function triggerOpenDialog(loadTargetId:number, loadTargetName:string) {
+        targetBccName = loadTargetName;
+        targetBccId = loadTargetId;
         isOpen = true 
     };
     let isOpen:boolean = false;
@@ -13,7 +13,7 @@
 
     function onSubmit(evt:SubmitEvent) {
         evt.preventDefault();
-        bccUnarchiveAction(targetBccId);
+        bccLoadAction(targetBccId);
         isOpen = false;
     }
 </script>
@@ -23,15 +23,15 @@
         <div class="modal-content">
             <form on:submit={ onSubmit }>
                 <div class="modal-header">
-                    <DialogTitle class="modal-title"><i class="fas fa-digital-tachograph"></i> Sortir de l'archive un BCC</DialogTitle>
+                    <DialogTitle class="modal-title"><i class="fas fa-digital-tachograph"></i> Charger un BCC</DialogTitle>
                 </div>
                 <div class="modal-body">
-                    <DialogDescription>Désarchiver le BCC <b>{ targetBccName } (#{ targetBccId })</b></DialogDescription>
+                    <DialogDescription>Charger le BCC <b>{ targetBccName } (#{ targetBccId })</b> comme version de travail</DialogDescription>
                     <p>Confirmez ou annulez cette action.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-secondary" on:click={ () => isOpen = false }>Annuler</button>
-                    <button type="submit" class="btn btn-warning">Confirmer le désarchivage</button>
+                    <button type="submit" class="btn btn-info">Confirmer le chargement</button>
                 </div>
             </form>
         </div>

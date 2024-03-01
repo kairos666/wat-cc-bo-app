@@ -1,10 +1,10 @@
 <script lang="ts">
     import { Dialog, DialogDescription, DialogOverlay, DialogTitle } from "@rgossiaux/svelte-headlessui";
-    import { bccUnarchiveAction } from "../../stores/bcc-store";
+    import { bccActivateAction } from "../../stores/bcc-store";
 
-    export function triggerOpenDialog(unarchiveTargetId:number, unarchiveTargetName:string) {
-        targetBccName = unarchiveTargetName;
-        targetBccId = unarchiveTargetId;
+    export function triggerOpenDialog(activateTargetId:number, activateTargetName:string) {
+        targetBccName = activateTargetName;
+        targetBccId = activateTargetId;
         isOpen = true 
     };
     let isOpen:boolean = false;
@@ -13,7 +13,7 @@
 
     function onSubmit(evt:SubmitEvent) {
         evt.preventDefault();
-        bccUnarchiveAction(targetBccId);
+        bccActivateAction(targetBccId);
         isOpen = false;
     }
 </script>
@@ -23,15 +23,15 @@
         <div class="modal-content">
             <form on:submit={ onSubmit }>
                 <div class="modal-header">
-                    <DialogTitle class="modal-title"><i class="fas fa-digital-tachograph"></i> Sortir de l'archive un BCC</DialogTitle>
+                    <DialogTitle class="modal-title"><i class="fas fa-digital-tachograph"></i> Activer un BCC</DialogTitle>
                 </div>
                 <div class="modal-body">
-                    <DialogDescription>Désarchiver le BCC <b>{ targetBccName } (#{ targetBccId })</b></DialogDescription>
+                    <DialogDescription>Activer le BCC <b>{ targetBccName } (#{ targetBccId })</b> comme version de référence pour le canal de vente NEW WATBOOK</DialogDescription>
                     <p>Confirmez ou annulez cette action.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="reset" class="btn btn-secondary" on:click={ () => isOpen = false }>Annuler</button>
-                    <button type="submit" class="btn btn-warning">Confirmer le désarchivage</button>
+                    <button type="submit" class="btn btn-success">Confirmer l'activation</button>
                 </div>
             </form>
         </div>

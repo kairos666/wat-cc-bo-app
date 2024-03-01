@@ -1,18 +1,22 @@
 <script lang="ts">
     import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@rgossiaux/svelte-headlessui";
-    import { bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData, bccLoadAction, bccActivateAction } from "../../stores/bcc-store";
+    import { bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import DialogCreateBcc from "$lib/bcc-components/DialogCreateBCC.svelte";
     import { format } from "date-fns";
     import DialogDuplicateBcc from "./DialogDuplicateBCC.svelte";
     import DialogDeleteConfirmBcc from "./DialogDeleteConfirmBCC.svelte";
     import DialogArchiveConfirmBcc from "./DialogArchiveConfirmBCC.svelte";
     import DialogUnarchiveConfirmBcc from "./DialogUnarchiveConfirmBCC.svelte";
+    import DialogLoadConfirmBcc from "./DialogLoadConfirmBCC.svelte";
+    import DialogActivateConfirmBcc from "./DialogActivateConfirmBCC.svelte";
 
     let createBccDialog:any;
     let duplicateBccDialog:any;
     let deleteBccDialog:any;
     let archiveBccDialog:any;
     let unarchiveBccDialog:any;
+    let loadBccDialog:any;
+    let activateBccDialog:any;
     let activeBCC:BccMetaData|null = null;
     let loadedBCC:BccMetaData|null = null;
     let allNonArchived:BccMetaData[] = [];
@@ -104,8 +108,8 @@
                                         <button class="btn btn-dark btn-sm" on:click={ () => archiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Archiver</button>
                                         <button class="btn btn-success btn-sm" on:click={ () => bccModelizeAction(bcc.id) }>Modéliser</button>
                                         <button class="btn btn-success btn-sm" on:click={ () => bccEnrichAction(bcc.id) }>Enrichir</button>
-                                        <button class="btn btn-primary btn-sm" on:click={ () => bccLoadAction(bcc.id) }>Charger</button>
-                                        <button class="btn btn-primary btn-sm" on:click={ () => bccActivateAction(bcc.id) }>Activer</button>
+                                        <button class="btn btn-primary btn-sm" on:click={ () => loadBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Charger</button>
+                                        <button class="btn btn-primary btn-sm" on:click={ () => activateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Activer</button>
                                     </menu>
                                 </td>
                             </tr>
@@ -163,6 +167,8 @@
 <DialogDeleteConfirmBcc bind:this={ deleteBccDialog } />
 <DialogArchiveConfirmBcc bind:this={ archiveBccDialog }/>
 <DialogUnarchiveConfirmBcc bind:this={ unarchiveBccDialog }/>
+<DialogLoadConfirmBcc bind:this={ loadBccDialog } />
+<DialogActivateConfirmBcc bind:this={ activateBccDialog } />
 
 <style lang="scss">
     #BCCManager {

@@ -2,9 +2,9 @@
     import { Dialog, DialogDescription, DialogOverlay, DialogTitle } from "@rgossiaux/svelte-headlessui";
     import { bccArchiveAction } from "../../stores/bcc-store";
 
-    export function triggerOpenDialog(deleteTargetId:number, deleteTargetName:string) {
-        targetBccName = deleteTargetName;
-        targetBccId = deleteTargetId;
+    export function triggerOpenDialog(archiveTargetId:number, archiveTargetName:string) {
+        targetBccName = archiveTargetName;
+        targetBccId = archiveTargetId;
         isOpen = true 
     };
     let isOpen:boolean = false;
