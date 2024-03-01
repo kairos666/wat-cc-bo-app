@@ -25,8 +25,8 @@
     $: if($getActiveBcc) { activeBCC = $getActiveBcc ?? null }
     $: if($getLoadedBcc) { loadedBCC = $getLoadedBcc ?? null }
     $: if($getAllBccs) { 
-        allNonArchived = $getAllBccs.filter(bcc => bcc.state !== "archivé").sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
-        allArchived = $getAllBccs.filter(bcc => bcc.state === "archivé").sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
+        allNonArchived = $getAllBccs.filter(bcc => !bcc.isArchived).sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
+        allArchived = $getAllBccs.filter(bcc => bcc.isArchived).sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
     }
 </script>
 
@@ -140,12 +140,13 @@
                             <tr>
                                 <th scope="row">{ bcc.id }</th>
                                 <td>{ bcc.name }</td>
-                                <td><span class="badge badge-dark">{ bcc.state }</span></td>
+                                <td><span class="badge badge-light">{ bcc.state }</span><span class="badge badge-dark">archivé</span></td>
                                 <td>{ format(new Date(bcc.created), "dd/MM/yyyy HH:mm") }</td>
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
                                     <menu class="BCCRowActions">
                                         <button class="btn btn-danger btn-sm" on:click={ () => deleteBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Supprimer</button>
+                                        <button class="btn btn-light btn-sm" on:click={ () => duplicateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Dupliquer</button>
                                         <button class="btn btn-warning btn-sm" on:click={ () => unarchiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Sortir de l'archive</button>
                                     </menu>
                                 </td>

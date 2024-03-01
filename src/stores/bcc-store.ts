@@ -1,6 +1,6 @@
 import Dexie, { liveQuery, type Table } from 'dexie';
 
-export type BccState = 'initié'|'nettoyé & typé'|'modélisé'|'prêt'|'actif'|'archivé';
+export type BccState = 'initié'|'nettoyé & typé'|'modélisé'|'prêt'|'actif';
 
 export type BccMetaData = {
     id: number
@@ -10,6 +10,7 @@ export type BccMetaData = {
     extractedSapData: number // timestamp
     activated: number|null // timestamp (null = not active)
     isWorkingInstance:boolean // loaded or not
+    isArchived:boolean
     error: string|null
 }
 
@@ -46,7 +47,7 @@ export async function bccCreate(name:string) {
     try {
         const created:number = new Date().getTime();
         const extractedSapData:number = created - Math.random() * 1000 * 60 * 60 * 24 * 7;
-        const id:number = await db.bccs.add(({ state: 'initié', name, created, extractedSapData, activated: null, isWorkingInstance: false, error: null } as BccMetaData)); // id is generated
+        const id:number = await db.bccs.add(({ state: 'initié', name, created, extractedSapData, activated: null, isWorkingInstance: false, isArchived: false, error: null } as BccMetaData)); // id is generated
         console.info(`BCC "${ name }" ADDED (id = ${ id })`);
     } catch (error) {
         throw new Error(`Failed to create new BCC ${ name } : ${ error }`);
@@ -65,10 +66,9 @@ export async function bccDelete(bccID:number) {
 export async function bccDuplicate(cloneName:string, cloneTargetId:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(cloneTargetId);
-        if(targetBcc.state === 'initié' || targetBcc.state === 'nettoyé & typé') throw new Error(`Forbidden to duplicate BCC with ${ targetBcc.state } state`);
-        const cloneState:BccState = (targetBcc.state === 'actif' || targetBcc.state === 'archivé') ? 'prêt' : targetBcc.state;
+        const cloneState:BccState = (targetBcc.state === 'actif') ? 'prêt' : targetBcc.state;
         const created:number = new Date().getTime();
-        const id:number = await db.bccs.add(({ state: cloneState, name: cloneName, created, extractedSapData: targetBcc.extractedSapData, activated: null, isWorkingInstance: false, error: targetBcc.error } as BccMetaData)); // id is generated
+        const id:number = await db.bccs.add(({ state: cloneState, name: cloneName, created, extractedSapData: targetBcc.extractedSapData, activated: null, isWorkingInstance: false, isArchived: false, error: targetBcc.error } as BccMetaData)); // id is generated
         console.info(`BCC "${ cloneName }" DUPLICATED (id = ${ id }, from id = ${ cloneTargetId })`);
     } catch (error) {
         throw new Error(`Failed to duplicate BCC ${ cloneTargetId } : ${ error }`);
@@ -161,10 +161,11 @@ export async function bccEnrichAction(bccID:number) {
 export async function bccArchiveAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state !== 'modélisé' && targetBcc.state !== 'prêt') throw new Error(`Forbidden to archive BCC with ${ targetBcc.state } state`);
+        if(targetBcc.state === 'actif') throw new Error(`Forbidden to archive active BCC`);
+        if(targetBcc.isArchived) throw new Error(`Forbidden to archive BCC it is already archived`);
 
         const formerState:BccState = targetBcc.state;
-        await db.bccs.update(bccID, { state: "archivé" });
+        await db.bccs.update(bccID, { isArchived: true });
         
         console.info(`BCC "${ bccID }" ARCHIVED (from = ${ formerState }, to = archivé`);
     } catch (error) {
@@ -175,9 +176,9 @@ export async function bccArchiveAction(bccID:number) {
 export async function bccUnarchiveAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state !== 'archivé') throw new Error(`Forbidden to unarchive BCC with ${ targetBcc.state } state`);
+        if(!targetBcc.isArchived) throw new Error(`Forbidden to unarchive BCC already not archived`);
 
-        await db.bccs.update(bccID, { state: 'modélisé' });
+        await db.bccs.update(bccID, { isArchived: false });
         await bccEnrichAction(bccID); // evaluate enrichment
         
         console.info(`BCC "${ bccID }" UNARCHIVED (from = archivé, to = modélisé ou prêt`);
