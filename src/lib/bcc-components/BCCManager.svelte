@@ -3,12 +3,14 @@
     import { bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import DialogCreateBcc from "$lib/bcc-components/DialogCreateBCC.svelte";
     import { format } from "date-fns";
-    import DialogDuplicateBcc from "./DialogDuplicateBCC.svelte";
-    import DialogDeleteConfirmBcc from "./DialogDeleteConfirmBCC.svelte";
-    import DialogArchiveConfirmBcc from "./DialogArchiveConfirmBCC.svelte";
-    import DialogUnarchiveConfirmBcc from "./DialogUnarchiveConfirmBCC.svelte";
-    import DialogLoadConfirmBcc from "./DialogLoadConfirmBCC.svelte";
-    import DialogActivateConfirmBcc from "./DialogActivateConfirmBCC.svelte";
+    import DialogDuplicateBcc from "$lib/bcc-components/DialogDuplicateBCC.svelte";
+    import DialogDeleteConfirmBcc from "$lib/bcc-components/DialogDeleteConfirmBCC.svelte";
+    import DialogArchiveConfirmBcc from "$lib/bcc-components/DialogArchiveConfirmBCC.svelte";
+    import DialogUnarchiveConfirmBcc from "$lib/bcc-components/DialogUnarchiveConfirmBCC.svelte";
+    import DialogLoadConfirmBcc from "$lib/bcc-components/DialogLoadConfirmBCC.svelte";
+    import DialogActivateConfirmBcc from "$lib/bcc-components/DialogActivateConfirmBCC.svelte";
+    import BCCActionsMenu from "$lib/bcc-components/BCCActionsMenu.svelte";
+    import type { BccActions } from "../../utils/casl-abilities";
 
     let createBccDialog:any;
     let duplicateBccDialog:any;
@@ -21,9 +23,22 @@
     let loadedBCC:BccMetaData|null = null;
     let allNonArchived:BccMetaData[] = [];
     let allArchived:BccMetaData[] = [];
+    const allActions:{ action:BccActions, cb: (targetBcc:BccMetaData) => void }[] = [
+        { action: 'delete', cb: (targetBcc) => { deleteBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
+        { action: 'clone', cb: (targetBcc) => { duplicateBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
+        { action: 'filter & type', cb: (targetBcc) => { console.log('TODO link to filter & type IHM', targetBcc) } },
+        { action: 'enrich', cb: (targetBcc) => { console.log('TODO link to enrichir IHM (MOCK for now)', targetBcc); bccEnrichAction(targetBcc.id) } },
+        { action: 'test', cb: (targetBcc) => { console.log('TODO link to test IHM', targetBcc) } },
+        { action: 'modelize', cb: (targetBcc) => { bccModelizeAction(targetBcc.id) } },
+        { action: 'archive', cb: (targetBcc) => { archiveBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
+        { action: 'unarchive', cb: (targetBcc) => { unarchiveBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
+        { action: 'load', cb: (targetBcc) => { loadBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
+        { action: 'activate', cb: (targetBcc) => { activateBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } }
+    ];
+    const restrictedActions = allActions.filter(actionObj => !['clone', 'enrich', 'filter & type', 'modelize', 'test', 'activate'].includes(actionObj.action));
 
-    $: if($getActiveBcc) { activeBCC = $getActiveBcc ?? null }
-    $: if($getLoadedBcc) { loadedBCC = $getLoadedBcc ?? null }
+    $: if($getActiveBcc) { activeBCC = $getActiveBcc ?? null; }
+    $: if($getLoadedBcc) { loadedBCC = $getLoadedBcc ?? null; }
     $: if($getAllBccs) { 
         allNonArchived = $getAllBccs.filter(bcc => !bcc.isArchived).sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
         allArchived = $getAllBccs.filter(bcc => bcc.isArchived).sort((a, b) => (a.created > b.created) ? -1 : (a.created < b.created) ? 1 : 0);
@@ -34,13 +49,16 @@
     <section id="BCCManager_LoadedBCC">
         <h2 class="mb-3">BCC chargé</h2>
         {#if loadedBCC}
-        <div class="info-box bg-info">
+        <div class="info-box bg-info mb-1">
             <span class="info-box-icon"><i class="fas fa-tools"></i></span>
             <div class="info-box-content">
-                <span class="info-box-number">{ loadedBCC.name } (#{ loadedBCC.id })</span>
+                <span class="info-box-number">{ loadedBCC.name } (#{ loadedBCC.id }) <span class="badge badge-light">{ loadedBCC.state }</span></span>
                 <span class="info-box-text"><i>créé le :</i> { format(new Date(loadedBCC.created), "dd/MM/yyyy HH:mm") }</span>
                 <span class="info-box-text"><i>données SAP :</i> { format(new Date(loadedBCC.extractedSapData), "dd/MM/yyyy HH:mm") }</span>
             </div>
+        </div>
+        <div class="rounded border border-info p-2">
+            <BCCActionsMenu targetBCC={ loadedBCC } allActions={ allActions } />
         </div>
         {:else}
         <figure class="emptyBccContainer rounded bg-white p-3 mb-0">
@@ -51,7 +69,7 @@
     <section id="BCCManager_ActiveBCC">
         <h2 class="mb-3">BCC actif</h2>
         {#if activeBCC}
-        <div class="info-box bg-success">
+        <div class="info-box bg-success mb-1">
             <span class="info-box-icon"><i class="fab fa-creative-commons"></i></span>
             <div class="info-box-content">
                 <span class="info-box-number">{ activeBCC.name } (#{ activeBCC.id })</span>
@@ -59,6 +77,9 @@
                 <span class="info-box-text"><i>données SAP :</i> { format(new Date(activeBCC.extractedSapData), "dd/MM/yyyy HH:mm") }</span>
                 {#if activeBCC.activated}<span class="info-box-number">activé le { format(new Date(activeBCC.activated), "dd/MM/yyyy HH:mm") }</span>{/if}
             </div>
+        </div>
+        <div class="rounded border border-success p-2">
+            <BCCActionsMenu targetBCC={ activeBCC } allActions={ allActions } />
         </div>
         {:else}
         <figure class="emptyBccContainer rounded bg-white p-3 mb-0">
@@ -102,15 +123,7 @@
                                 <td>{ format(new Date(bcc.created), "dd/MM/yyyy HH:mm") }</td>
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
-                                    <menu class="BCCRowActions">
-                                        <button class="btn btn-danger btn-sm" on:click={ () => deleteBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Supprimer</button>
-                                        <button class="btn btn-light btn-sm" on:click={ () => duplicateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Dupliquer</button>
-                                        <button class="btn btn-dark btn-sm" on:click={ () => archiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Archiver</button>
-                                        <button class="btn btn-success btn-sm" on:click={ () => bccModelizeAction(bcc.id) }>Modéliser</button>
-                                        <button class="btn btn-success btn-sm" on:click={ () => bccEnrichAction(bcc.id) }>Enrichir</button>
-                                        <button class="btn btn-primary btn-sm" on:click={ () => loadBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Charger</button>
-                                        <button class="btn btn-primary btn-sm" on:click={ () => activateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Activer</button>
-                                    </menu>
+                                    <BCCActionsMenu targetBCC={ bcc } allActions={ restrictedActions } />
                                 </td>
                             </tr>
                             {/each}
@@ -144,11 +157,7 @@
                                 <td>{ format(new Date(bcc.created), "dd/MM/yyyy HH:mm") }</td>
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
-                                    <menu class="BCCRowActions">
-                                        <button class="btn btn-danger btn-sm" on:click={ () => deleteBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Supprimer</button>
-                                        <button class="btn btn-light btn-sm" on:click={ () => duplicateBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Dupliquer</button>
-                                        <button class="btn btn-warning btn-sm" on:click={ () => unarchiveBccDialog.triggerOpenDialog(bcc.id, bcc.name) }>Sortir de l'archive</button>
-                                    </menu>
+                                    <BCCActionsMenu targetBCC={ bcc } allActions={ restrictedActions } />
                                 </td>
                             </tr>
                             {/each}
@@ -180,7 +189,7 @@
             "loaded-bcc active-bcc"
             "all-bcc all-bcc"
             ". actions-bcc";
-        gap: 1rem;
+        gap: 3rem 1.5rem;
         align-content: stretch;
 
         #BCCManager_LoadedBCC { grid-area: loaded-bcc; }
@@ -199,13 +208,6 @@
             width:80%;
             min-width:300px;
         }
-    }
-
-    .BCCRowActions {
-        display: flex;
-        gap:0.5rem;
-        margin-block: 0;
-        padding-inline-start: 0;
     }
 
     .table > tbody > tr > td {

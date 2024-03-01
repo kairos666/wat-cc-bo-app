@@ -1,4 +1,5 @@
 import Dexie, { liveQuery, type Table } from 'dexie';
+import { bccActionsAbility, BccSubject } from '../utils/casl-abilities';
 
 export type BccState = 'initié'|'nettoyé & typé'|'modélisé'|'prêt'|'actif';
 
@@ -83,7 +84,7 @@ export async function bccDuplicate(cloneName:string, cloneTargetId:number) {
 export async function bccModelizeAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state !== 'initié' && targetBcc.state !== 'nettoyé & typé') throw new Error(`Forbidden to modelize BCC with ${ targetBcc.state } state`);
+        if(bccActionsAbility.cannot('modelize', new BccSubject(targetBcc.state, targetBcc.isWorkingInstance, targetBcc.isArchived))) throw new Error(`Forbidden to modelize BCC`);
 
         const formerState:BccState = targetBcc.state;
         const isSuccess:boolean = (Math.random() <= 0.9); // 90% of success (mock process outcome)
@@ -103,53 +104,48 @@ export async function bccModelizeAction(bccID:number) {
     }
 }
 // modélisé --> prêt (auto)
-async function bccReadyAutoTransitionCheck(bccID:number) {
+async function bccReadyAutoTransitionCheck(targetBcc:BccMetaData) {
     try {
-        const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state !== 'modélisé') throw new Error(`Forbidden to mark BCC ready with ${ targetBcc.state } state`);
-
         const formerState:BccState = targetBcc.state;
         const isSuccess:boolean = (Math.random() <= 0.5); // 50% of success (mock process outcome)
 
         if(isSuccess) {
             const newState:BccState = "prêt";
-            await db.bccs.update(bccID, { state: newState, error: null });
-            console.info(`BCC "${ bccID }" is READY (from = ${ formerState }, to = ${ newState })`);
+            await db.bccs.update(targetBcc.id, { state: newState, error: null });
+            console.info(`BCC "${ targetBcc.id }" is READY (from = ${ formerState }, to = ${ newState })`);
         } else {
-            console.info(`BCC "${ bccID }" is NOT READY (stay at = ${ formerState }`);
+            console.info(`BCC "${ targetBcc.id }" is NOT READY (stay at = ${ formerState }`);
         }
     } catch (error) {
-        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+        throw new Error(`Failed to perform action on BCC ${ targetBcc.id } : ${ error }`);
     }
 }
 // prêt --> modélisé (auto)
-async function bccUnreadyAutoTransitionCheck(bccID:number) {
+async function bccUnreadyAutoTransitionCheck(targetBcc:BccMetaData) {
     try {
-        const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state !== 'prêt') throw new Error(`Forbidden to mark BCC unready with ${ targetBcc.state } state`);
-
         const formerState:BccState = targetBcc.state;
         const isSuccess:boolean = (Math.random() <= 0.1); // 10% of success (mock process outcome)
 
         if(isSuccess) {
             const newState:BccState = "modélisé";
-            await db.bccs.update(bccID, { state: newState, error: null });
-            console.info(`BCC "${ bccID }" is NOT READY ANYMORE (from = ${ formerState }, to = ${ newState })`);
+            await db.bccs.update(targetBcc.id, { state: newState, error: null });
+            console.info(`BCC "${ targetBcc.id }" is NOT READY ANYMORE (from = ${ formerState }, to = ${ newState })`);
         } else {
-            console.info(`BCC "${ bccID }" is STILL READY (stay at = ${ formerState }`);
+            console.info(`BCC "${ targetBcc.id }" is STILL READY (stay at = ${ formerState }`);
         }
     } catch (error) {
-        throw new Error(`Failed to perform action on BCC ${ bccID } : ${ error }`);
+        throw new Error(`Failed to perform action on BCC ${ targetBcc.id } : ${ error }`);
     }
 }
 
 export async function bccEnrichAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
+        if(bccActionsAbility.cannot('enrich', new BccSubject(targetBcc.state, targetBcc.isWorkingInstance, targetBcc.isArchived))) throw new Error(`Forbidden to enrich`);
         if(targetBcc.state === "modélisé") {
-            await bccReadyAutoTransitionCheck(bccID);
+            await bccReadyAutoTransitionCheck(targetBcc);
         } else if(targetBcc.state === "prêt") {
-            await bccUnreadyAutoTransitionCheck(bccID);
+            await bccUnreadyAutoTransitionCheck(targetBcc);
         }
         
         console.info(`BCC "${ bccID }" ENRICHMENT accounted for`);
@@ -161,8 +157,7 @@ export async function bccEnrichAction(bccID:number) {
 export async function bccArchiveAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(targetBcc.state === 'actif') throw new Error(`Forbidden to archive active BCC`);
-        if(targetBcc.isArchived) throw new Error(`Forbidden to archive BCC it is already archived`);
+        if(bccActionsAbility.cannot('archive', new BccSubject(targetBcc.state, targetBcc.isWorkingInstance, targetBcc.isArchived))) throw new Error(`Forbidden to archive BCC`);
 
         const formerState:BccState = targetBcc.state;
         await db.bccs.update(bccID, { isArchived: true });
@@ -176,10 +171,9 @@ export async function bccArchiveAction(bccID:number) {
 export async function bccUnarchiveAction(bccID:number) {
     try {
         const targetBcc:BccMetaData = await getBCCByID(bccID);
-        if(!targetBcc.isArchived) throw new Error(`Forbidden to unarchive BCC already not archived`);
+        if(bccActionsAbility.cannot('unarchive', new BccSubject(targetBcc.state, targetBcc.isWorkingInstance, targetBcc.isArchived))) throw new Error(`Forbidden to unarchive BCC`);
 
         await db.bccs.update(bccID, { isArchived: false });
-        await bccEnrichAction(bccID); // evaluate enrichment
         
         console.info(`BCC "${ bccID }" UNARCHIVED (from = archivé, to = modélisé ou prêt`);
     } catch (error) {

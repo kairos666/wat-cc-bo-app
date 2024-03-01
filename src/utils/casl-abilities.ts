@@ -1,18 +1,7 @@
 import { defineAbility, PureAbility, type AnyMongoAbility } from "@casl/ability";
-import { type BccState } from "../stores/bcc-store";
 
 //export type PageAccessAbility = PureAbility<string> & AnyMongoAbility; // string = page route URL (AnyMongoAbility resolve type issue https://github.com/stalniy/casl/issues/525)
 export type AppAccessAbility = PureAbility<'CC'|'NW'|'BO'> & AnyMongoAbility; // must keep in sync with access to routes
-
-// export const pageAbilityBuilder = (userRoles:string[], pagePermissionsObject:{ url:string, roles:string[] }[]) => defineAbility<PageAccessAbility>((can, cannot) => {
-//     pagePermissionsObject.forEach(({ url, roles }) => {
-//         const hasPermission:boolean = (roles.length === 0)
-//             ? true
-//             : roles.some(value => userRoles.includes(value));
-
-//         if(hasPermission) { can(url) } else { cannot(url) }
-//     });
-// })
 
 export const appAbilityBuilder = (userRoles:string[]) => defineAbility<AppAccessAbility>((can, cannot) => {
     if(userRoles.includes('user')) { can("NW"); can("BO") } else { cannot("NW"); cannot("BO") }
@@ -22,7 +11,7 @@ export const appAbilityBuilder = (userRoles:string[]) => defineAbility<AppAccess
 /**
  * ACTIONS permissions for BCC (based on state, isWorkingInstance, isArchived)
  */
-export type BccActions = 'delete'|'clone'|'filter & type'|'enrich'|'modelize'|'archive'|'unarchive'|'load'|'activate';
+export type BccActions = 'delete'|'clone'|'filter & type'|'enrich'|'test'|'modelize'|'archive'|'unarchive'|'load'|'activate';
 export class BccSubject {
     static get modelName() { return 'BCC' }
     state:string;
@@ -53,6 +42,9 @@ export const bccActionsAbility = defineAbility<BccAbility>((can) => {
     // enrich only on loaded BCC in state modélisé & prêt
     can('enrich', 'BCC', { state: 'modélisé', isWorkingInstance: true });
     can('enrich', 'BCC', { state: 'prêt', isWorkingInstance: true });
+    // test is only possible on loaded or active BCC that have reached the prêt stage
+    can('test', 'BCC', { state: 'actif' });
+    can('test', 'BCC', { state: 'prêt', isWorkingInstance: true });
     // modelize only on loaded BCC in state initié & nettoyé & typé
     can('modelize', 'BCC', { state: 'initié', isWorkingInstance: true });
     can('modelize', 'BCC', { state: 'nettoyé & typé', isWorkingInstance: true });
