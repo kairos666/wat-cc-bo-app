@@ -10,7 +10,7 @@
 <nav id="MainHeader" class="main-header navbar navbar-expand navbar-white navbar-light">
     <button class="NavMenuToggleBtn" on:click={ toggleNav }><Menu /></button>
     <span class="NavMenuSpacer"></span>
-    {#if $navStore.hasCCAccess}<button class="PerspectiveBtn PerspectiveBtn-CC" on:click={ () => goto('/CONFCOM') }>CONFCOM</button>{/if}
+    {#if $navStore.hasCCAccess}<button disabled class="PerspectiveBtn PerspectiveBtn-CC" on:click={ () => goto('/CONFCOM') }>CONFCOM</button>{/if}
     {#if $navStore.hasNWAccess}<button class="PerspectiveBtn PerspectiveBtn-NW" on:click={ () => goto('/NEWWATBOOK') }>NEW WATBOOK</button>{/if}
     <Popover style="position: relative;">
         <PopoverButton><CircleUserRound /><span class="ml-2">{ $navStore.profile?.firstName } { $navStore.profile?.lastName }</span></PopoverButton>

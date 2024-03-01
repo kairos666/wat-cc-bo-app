@@ -47,7 +47,8 @@
 
 <article id="BCCManager" class="mb-4">
     <section id="BCCManager_LoadedBCC">
-        <h2 class="mb-3">BCC chargé</h2>
+        <h2 class="MainBccTitle mb-3">BCC chargé</h2>
+        <p class="MainBccDesc">Il s'agit du BCC de travail, toutes les modifications effectuées dans CONFCOM sont appliquées à ce BCC. Pas d'impact sur NEW WATBOOK.</p>
         {#if loadedBCC}
         <div class="info-box bg-info mb-1">
             <span class="info-box-icon"><i class="fas fa-tools"></i></span>
@@ -67,7 +68,8 @@
         {/if}
     </section>
     <section id="BCCManager_ActiveBCC">
-        <h2 class="mb-3">BCC actif</h2>
+        <h2 class="MainBccTitle mb-3">BCC actif</h2>
+        <p class="MainBccDesc">Il s'agit du BCC de référence, c'est celui pris en compte pour NEW WATBOOK.</p>
         {#if activeBCC}
         <div class="info-box bg-success mb-1">
             <span class="info-box-icon"><i class="fab fa-creative-commons"></i></span>
@@ -100,7 +102,7 @@
                         <h4 class="alert-heading">Aucun BCC</h4>
                         <p>Commencez par créer un nouveau jeu de données.</p>
                         <hr>
-                        <button class="btn btn-secondary" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC (extraction SAP)</button>
+                        <button class="btn btn-secondary" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC</button>
                     </div>
                     {:else}
                     <table class="table table-hover table-sm">
@@ -169,7 +171,7 @@
         </TabGroup>
     </section>
     <footer id="BCCManager_Footer">
-        <button class="btn btn-success btn-lg" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC (extraction SAP)</button>
+        <button class="btn btn-success btn-lg" on:click={ () => createBccDialog.triggerOpenDialog() }><i class="fas fa-plus pr-2"></i>Créer un nouveau BCC</button>
     </footer>
 </article>
 <DialogCreateBcc bind:this={ createBccDialog } />
@@ -196,6 +198,10 @@
         #BCCManager_ActiveBCC { grid-area: active-bcc; }
         #BCCManager_AllBCC { grid-area: all-bcc; }
         #BCCManager_Footer { grid-area: actions-bcc; justify-self: end; }
+    }
+
+    .MainBccDesc {
+        min-height: 48px;
     }
 
     .emptyBccContainer {

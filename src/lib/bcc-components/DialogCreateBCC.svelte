@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Dialog, DialogDescription, DialogOverlay, DialogTitle } from "@rgossiaux/svelte-headlessui";
+    import { Dialog, DialogOverlay, DialogTitle } from "@rgossiaux/svelte-headlessui";
     import { bccCreate } from "../../stores/bcc-store";
 
     export function triggerOpenDialog() { isOpen = true };
@@ -21,7 +21,10 @@
                     <DialogTitle class="modal-title"><i class="fas fa-digital-tachograph"></i> Créer un nouveau BCC</DialogTitle>
                 </div>
                 <div class="modal-body">
-                    <DialogDescription>La dernière extraction SAP disponible est prise en compte dans le BCC en cours de création.</DialogDescription>
+                    <div class="alert alert-success" role="alert">
+                        <h4 class="alert-heading">Extraction SAP</h4>
+                        <p>La dernière extraction SAP mise à disposition est prise en compte dans le BCC résultant.</p>
+                    </div>
                     <div class="form-group">
                         <label for="bcc-label">Nom du BCC</label>
                         <input type="text" id="bcc-label" class="form-control" name="bcc-label" placeholder="Nom du BCC" bind:value={ bccName } on:change={ evt => bccName = evt.currentTarget.value } required />

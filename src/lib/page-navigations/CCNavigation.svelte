@@ -1,5 +1,6 @@
 <script lang="ts">
     import smallLogo from "$lib/images/business-model.png";
+    import { getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import NavItem from "./NavItem.svelte";
     import NavItemWithSubitems from "./NavItemWithSubitems.svelte";
 
@@ -32,6 +33,8 @@
             { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-circle"] }
         ] },
     ]
+    let loadedBCC:BccMetaData|null = null;
+    $: if($getLoadedBcc) { loadedBCC = $getLoadedBcc ?? null; }
 </script>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -43,7 +46,14 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 {#each navTree as navItem}
-                    {#if navItem.type === "simple-link"}
+                    {#if (navItem.type === "simple-link" && navItem.label === "Accueil" && loadedBCC)}
+                    <li class="nav-item">
+                        <a href={ navItem.href } class="nav-link bg-info">
+                            <i class="nav-icon fas fa-tools"></i>
+                            <p>{ loadedBCC.name } <span class="badge badge-light">{ loadedBCC.state }</span></p>
+                        </a>
+                    </li>
+                    {:else if navItem.type === "simple-link"}
                         <NavItem href={ navItem.href } label={ navItem.label } faIcon={ navItem.faIcon } />
                     {:else}
                         <NavItemWithSubitems label={ navItem.label } faIcon={ navItem.faIcon } childrenURL={ navItem.children.map(child => child.href) }>
