@@ -1,6 +1,7 @@
 <script lang="ts">
     import smallLogo from "$lib/images/business-model.png";
-    import { getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
+    import { getLoadedBcc, type BccMetaData, type BccState } from "../../stores/bcc-store";
+    import BccRelatedNavItems from "./BccRelatedNavItems.svelte";
     import NavItem from "./NavItem.svelte";
     import NavItemWithSubitems from "./NavItemWithSubitems.svelte";
 
@@ -11,6 +12,14 @@
         faIcon:string[]
     }
 
+    type ContextualizedNavItemObj = {
+        type: 'contextualized-link'
+        href:string
+        label:string
+        faIcon:string[]
+        relevantStates:BccState[]
+    }
+
     type GroupWithSubitemsObj = {
         type: 'group-with-subitems'
         label:string
@@ -18,11 +27,22 @@
         children: NavItemObj[]
     }
 
-    const navTree:(GroupWithSubitemsObj|NavItemObj)[] = [
-        { type: 'simple-link', href: "/CONFCOM", label: "Accueil", faIcon: ["fas", "fa-home"] },
-        { type: 'simple-link', href: "/CONFCOM/tdv", label: "Parcours TDV", faIcon: ["fas", "fa-handshake"] },
-        { type: 'simple-link', href: "/CONFCOM/bundle-cc", label: "BCC", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'group-with-subitems', label: "Contexte", faIcon: ["fas", "fa-atlas"], children: [
+    const bccContextualizedNavTree:ContextualizedNavItemObj[] = [
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-handshake"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/types", label: "Typage articles", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/processus/modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/tdv", label: "TDV Configurateur", faIcon: ["fas", "fa-handshake"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/availability", label: "Disponibilité par pays", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/compatibility", label: "Compatibilités articles", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/translations", label: "Traductions", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/test-bcc", label: "Tester", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé', 'modélisé', 'prêt', 'actif'], href: "/CONFCOM/bcc-report", label: "Rapport", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé', 'modélisé', 'prêt', 'actif'], href: "/CONFCOM/bundle-cc", label: "BCC", faIcon: ["fas", "fa-digital-tachograph"] },
+    ];
+
+    const transverseNavTree:(GroupWithSubitemsObj|NavItemObj)[] = [
+        { type: 'group-with-subitems', label: "Contexte partagé", faIcon: ["fas", "fa-atlas"], children: [
+            { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/country", label: "Pays", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/language", label: "Langues", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/currency", label: "Devises", faIcon: ["fas", "fa-circle"] },
@@ -32,9 +52,14 @@
             { type: 'simple-link', href: "/CONFCOM/tva", label: "TVAs", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-circle"] }
         ] },
-    ]
+        { type: 'simple-link', href: "/", label: "Documents & médias", faIcon: ["fas", "fa-folder-open"] },
+    ];
     let loadedBCC:BccMetaData|null = null;
-    $: if($getLoadedBcc) { loadedBCC = $getLoadedBcc ?? null; }
+    let filteredBccContextualizedNavTree:ContextualizedNavItemObj[] = [];
+    $: if($getLoadedBcc) { 
+        loadedBCC = $getLoadedBcc ?? null;
+        filteredBccContextualizedNavTree = (loadedBCC !== null) ? bccContextualizedNavTree.filter(linkObj => linkObj.relevantStates.includes((loadedBCC as BccMetaData).state)) : [];
+    }
 </script>
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -45,15 +70,16 @@
     <div class="sidebar os-host-scrollbar-horizontal-hidden">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                {#each navTree as navItem}
-                    {#if (navItem.type === "simple-link" && navItem.label === "Accueil" && loadedBCC)}
-                    <li class="nav-item">
-                        <a href={ navItem.href } class="nav-link bg-info">
-                            <i class="nav-icon fas fa-tools"></i>
-                            <p>{ loadedBCC.name } <span class="badge badge-light">{ loadedBCC.state }</span></p>
-                        </a>
-                    </li>
-                    {:else if navItem.type === "simple-link"}
+                <NavItem href="/CONFCOM" label="Accueil" faIcon={ ["fas", "fa-home"] } />
+                {#if loadedBCC}
+                    <BccRelatedNavItems bccMetaData={ loadedBCC } childrenURL={ filteredBccContextualizedNavTree.map(child => child.href) }>
+                        {#each filteredBccContextualizedNavTree as navItem}
+                            <NavItem href={ navItem.href } label={ navItem.label } faIcon={ navItem.faIcon } />
+                        {/each}
+                    </BccRelatedNavItems>
+                {/if}
+                {#each transverseNavTree as navItem}
+                    {#if navItem.type === "simple-link"}
                         <NavItem href={ navItem.href } label={ navItem.label } faIcon={ navItem.faIcon } />
                     {:else}
                         <NavItemWithSubitems label={ navItem.label } faIcon={ navItem.faIcon } childrenURL={ navItem.children.map(child => child.href) }>
@@ -67,3 +93,11 @@
         </nav>
     </div>
 </aside>
+
+<style lang="scss">
+    .nav-separator {
+        height:1px;
+        background-color: var(--gray);
+        margin-block: 1rem;
+    }
+</style>
