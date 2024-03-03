@@ -8,7 +8,7 @@
         ['delete', { classes: 'btn btn-danger btn-sm', label: 'Supprimer' }],
         ['clone', { classes: 'btn btn-light btn-sm', label: 'Dupliquer' }],
         ['filter & type', { classes: 'btn btn-light btn-sm', label: 'Filtrer et typer' }],
-        ['enrich', { classes: 'btn btn-outline-success btn-sm', label: 'Enrichir' }],
+        ['enrich', { classes: 'btn btn-outline-success btn-sm', label: 'Valider enrichissement' }],
         ['test', { classes: 'btn btn-light btn-sm', label: 'Tester' }],
         ['modelize', { classes: 'btn btn-outline-success btn-sm', label: 'Modéliser' }],
         ['archive', { classes: 'btn btn-dark btn-sm', label: 'Archiver' }],

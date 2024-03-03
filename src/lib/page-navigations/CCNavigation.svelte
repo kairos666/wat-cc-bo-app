@@ -1,6 +1,7 @@
 <script lang="ts">
     import smallLogo from "$lib/images/business-model.png";
-    import { getLoadedBcc, type BccMetaData, type BccState } from "../../stores/bcc-store";
+    import { getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
+    import { bccActionsAbility, type BccActions, BccSubject } from "../../utils/casl-abilities";
     import BccRelatedNavItems from "./BccRelatedNavItems.svelte";
     import NavItem from "./NavItem.svelte";
     import NavItemWithSubitems from "./NavItemWithSubitems.svelte";
@@ -17,7 +18,7 @@
         href:string
         label:string
         faIcon:string[]
-        relevantStates:BccState[]
+        relatedAction:BccActions|null // null = action not linked to an ability (alaways permitted)
     }
 
     type GroupWithSubitemsObj = {
@@ -27,18 +28,18 @@
         children: NavItemObj[]
     }
 
-    const bccContextualizedNavTree:ContextualizedNavItemObj[] = [
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/sap-filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-filter"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/sap-types", label: "Typage articles", faIcon: ["fas", "fa-cubes"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/processus-modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-clipboard-check"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/caracteristics", label: "Caractéristiques", faIcon: ["fas", "fa-ruler-combined"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/catalog", label: "Catalogue d'articles", faIcon: ["fas", "fa-shopping-cart"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/product-availability", label: "Disponibilité par pays", faIcon: ["fas", "fa-globe-europe"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/product-compatibility", label: "Compatibilités articles", faIcon: ["fas", "fa-not-equal"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/tdv", label: "TDV Configurateur", faIcon: ["fas", "fa-handshake"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé'], href: "/CONFCOM/processus-enrich", label: "Valider enrichissement", faIcon: ["fas", "fa-clipboard-check"] },
-        { type: 'contextualized-link', relevantStates: ['prêt', 'actif'], href: "/CONFCOM/bcc-test", label: "Tester", faIcon: ["fas", "fa-flask"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé', 'modélisé', 'prêt', 'actif'], href: "/CONFCOM/bcc-report", label: "Rapport", faIcon: ["fas", "fa-clipboard-list"] },
+    const bccContextualizedNavTree:ContextualizedNavItemObj[] = [ // 'delete'|'clone'|'filter & type'|'enrich'|'test'|'modelize'|'archive'|'unarchive'|'load'|'activate';
+        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-filter"] },
+        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-types", label: "Typage articles", faIcon: ["fas", "fa-cubes"] },
+        { type: 'contextualized-link', relatedAction: "modelize", href: "/CONFCOM/processus-modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-clipboard-check"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/caracteristics", label: "Caractéristiques", faIcon: ["fas", "fa-ruler-combined"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/catalog", label: "Catalogue d'articles", faIcon: ["fas", "fa-shopping-cart"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/product-availability", label: "Disponibilité par pays", faIcon: ["fas", "fa-globe-europe"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/product-compatibility", label: "Compatibilités articles", faIcon: ["fas", "fa-not-equal"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/tdv", label: "TDV Configurateur", faIcon: ["fas", "fa-handshake"] },
+        { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/processus-enrich", label: "Valider enrichissement", faIcon: ["fas", "fa-clipboard-check"] },
+        { type: 'contextualized-link', relatedAction: "test", href: "/CONFCOM/bcc-test/loaded", label: "Tester", faIcon: ["fas", "fa-flask"] },
+        { type: 'contextualized-link', relatedAction: null, href: "/CONFCOM/bcc-report", label: "Rapport", faIcon: ["fas", "fa-clipboard-list"] },
     ];
 
     const transverseNavTree:(GroupWithSubitemsObj|NavItemObj)[] = [
@@ -59,7 +60,12 @@
     let filteredBccContextualizedNavTree:ContextualizedNavItemObj[] = [];
     $: if($getLoadedBcc) { 
         loadedBCC = $getLoadedBcc ?? null;
-        filteredBccContextualizedNavTree = (loadedBCC !== null) ? bccContextualizedNavTree.filter(linkObj => linkObj.relevantStates.includes((loadedBCC as BccMetaData).state)) : [];
+        const bccAbilitySubject = new BccSubject(loadedBCC.state, loadedBCC.isWorkingInstance, loadedBCC.isArchived);
+        filteredBccContextualizedNavTree = (loadedBCC !== null) ? bccContextualizedNavTree.filter(linkObj => {
+            return (linkObj.relatedAction !== null)
+                ? bccActionsAbility.can(linkObj.relatedAction, bccAbilitySubject)
+                : true;
+        }) : [];
     }
 </script>
 

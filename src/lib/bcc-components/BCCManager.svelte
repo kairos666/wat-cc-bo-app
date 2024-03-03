@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@rgossiaux/svelte-headlessui";
-    import { bccEnrichAction, bccModelizeAction, getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
+    import { getAllBccs, getActiveBcc, getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import DialogCreateBcc from "$lib/bcc-components/DialogCreateBCC.svelte";
     import { format } from "date-fns";
     import DialogDuplicateBcc from "$lib/bcc-components/DialogDuplicateBCC.svelte";
@@ -12,6 +12,7 @@
     import BCCActionsMenu from "$lib/bcc-components/BCCActionsMenu.svelte";
     import type { BccActions } from "../../utils/casl-abilities";
     import BccStateWorkflow from "./BCCStateWorkflow.svelte";
+    import { goto } from "$app/navigation";
 
     let createBccDialog:any;
     let duplicateBccDialog:any;
@@ -27,10 +28,13 @@
     const allActions:{ action:BccActions, cb: (targetBcc:BccMetaData) => void }[] = [
         { action: 'delete', cb: (targetBcc) => { deleteBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
         { action: 'clone', cb: (targetBcc) => { duplicateBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
-        { action: 'filter & type', cb: (targetBcc) => { console.log('TODO link to filter & type IHM', targetBcc) } },
-        { action: 'enrich', cb: (targetBcc) => { console.log('TODO link to enrichir IHM (MOCK for now)', targetBcc); bccEnrichAction(targetBcc.id) } },
-        { action: 'test', cb: (targetBcc) => { console.log('TODO link to test IHM', targetBcc) } },
-        { action: 'modelize', cb: (targetBcc) => { bccModelizeAction(targetBcc.id) } },
+        { action: 'filter & type', cb: () => { goto('/CONFCOM/sap-filters') } },
+        { action: 'enrich', cb: () => { goto('/CONFCOM/processus-enrich') } },
+        { action: 'test', cb: (targetBcc) => {
+            const testTarget:"loaded"|"active" = (targetBcc.state === 'actif') ? "active" : "loaded";
+            goto(`/CONFCOM/bcc-test/${ testTarget }`);
+        }},
+        { action: 'modelize', cb: () => { goto('/CONFCOM/processus-modelize') } },
         { action: 'archive', cb: (targetBcc) => { archiveBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
         { action: 'unarchive', cb: (targetBcc) => { unarchiveBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
         { action: 'load', cb: (targetBcc) => { loadBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
