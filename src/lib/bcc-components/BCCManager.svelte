@@ -11,6 +11,7 @@
     import DialogActivateConfirmBcc from "$lib/bcc-components/DialogActivateConfirmBCC.svelte";
     import BCCActionsMenu from "$lib/bcc-components/BCCActionsMenu.svelte";
     import type { BccActions } from "../../utils/casl-abilities";
+    import BccStateWorkflow from "./BCCStateWorkflow.svelte";
 
     let createBccDialog:any;
     let duplicateBccDialog:any;
@@ -47,7 +48,7 @@
 
 <article id="BCCManager" class="mb-4">
     <section id="BCCManager_LoadedBCC">
-        <h2 class="MainBccTitle mb-3">BCC chargé</h2>
+        <h2 class="MainBccTitle mb-3">BCC chargé, référence <span style:color="var(--cc-light)">CONFCOM</span></h2>
         <p class="MainBccDesc">Il s'agit du BCC de travail, toutes les modifications effectuées dans CONFCOM sont appliquées à ce BCC. Pas d'impact sur NEW WATBOOK.</p>
         {#if loadedBCC}
         <div class="info-box bg-info mb-1">
@@ -68,8 +69,8 @@
         {/if}
     </section>
     <section id="BCCManager_ActiveBCC">
-        <h2 class="MainBccTitle mb-3">BCC actif</h2>
-        <p class="MainBccDesc">Il s'agit du BCC de référence, c'est celui pris en compte pour NEW WATBOOK.</p>
+        <h2 class="MainBccTitle mb-3">BCC actif, référence <span style:color="var(--nw-light)">NEW WATBOOK</span></h2>
+        <p class="MainBccDesc">Il s'agit du BCC de référence pour NEW WATBOOK. Les parcours sont tous construits autour de ce configurateur commercial.</p>
         {#if activeBCC}
         <div class="info-box bg-success mb-1">
             <span class="info-box-icon"><i class="fab fa-creative-commons"></i></span>
@@ -120,8 +121,8 @@
                             {#each allNonArchived as bcc}
                             <tr>
                                 <th scope="row">{ bcc.id }</th>
-                                <td>{ bcc.name }</td>
-                                <td>{#if bcc.state === "actif"}<span class="badge badge-success">{ bcc.state }</span>{:else}<span class="badge badge-light">{ bcc.state }</span>{/if} {#if bcc.isWorkingInstance}<span class="badge badge-info">Chargé</span>{/if}</td>
+                                <td>{ bcc.name }{#if bcc.state === "actif"}<span class="ml-2 badge badge-success">{ bcc.state }</span>{/if}{#if bcc.isWorkingInstance}<span class="ml-2 badge badge-info">Chargé</span>{/if}</td>
+                                <td><BccStateWorkflow state={ bcc.state } /></td>
                                 <td>{ format(new Date(bcc.created), "dd/MM/yyyy HH:mm") }</td>
                                 <td>{ format(new Date(bcc.extractedSapData), "dd/MM/yyyy HH:mm") }</td>
                                 <td>
