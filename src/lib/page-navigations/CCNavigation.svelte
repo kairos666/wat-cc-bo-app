@@ -28,31 +28,32 @@
     }
 
     const bccContextualizedNavTree:ContextualizedNavItemObj[] = [
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-handshake"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/types", label: "Typage articles", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/processus/modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/sap-filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-handshake"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/sap-types", label: "Typage articles", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé'], href: "/CONFCOM/processus-modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/caracteristics", label: "Caractéristiques", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/catalog", label: "Catalogue d'articles", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/product-availability", label: "Disponibilité par pays", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/product-compatibility", label: "Compatibilités articles", faIcon: ["fas", "fa-digital-tachograph"] },
         { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/tdv", label: "TDV Configurateur", faIcon: ["fas", "fa-handshake"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/availability", label: "Disponibilité par pays", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/compatibility", label: "Compatibilités articles", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/translations", label: "Traductions", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'contextualized-link', relevantStates: ['modélisé', 'prêt'], href: "/CONFCOM/test-bcc", label: "Tester", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['modélisé'], href: "/CONFCOM/processus-enrich", label: "Valider enrichissement", faIcon: ["fas", "fa-digital-tachograph"] },
+        { type: 'contextualized-link', relevantStates: ['prêt', 'actif'], href: "/CONFCOM/bcc-test", label: "Tester", faIcon: ["fas", "fa-digital-tachograph"] },
         { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé', 'modélisé', 'prêt', 'actif'], href: "/CONFCOM/bcc-report", label: "Rapport", faIcon: ["fas", "fa-digital-tachograph"] },
-        { type: 'contextualized-link', relevantStates: ['initié', 'nettoyé & typé', 'modélisé', 'prêt', 'actif'], href: "/CONFCOM/bundle-cc", label: "BCC", faIcon: ["fas", "fa-digital-tachograph"] },
     ];
 
     const transverseNavTree:(GroupWithSubitemsObj|NavItemObj)[] = [
         { type: 'group-with-subitems', label: "Contexte partagé", faIcon: ["fas", "fa-atlas"], children: [
-            { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/country", label: "Pays", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/language", label: "Langues", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/currency", label: "Devises", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/delivery-cost", label: "Frais de livraison", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/delivery-delay", label: "Délais de livraison", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/product-line", label: "Lignes d'équipement", faIcon: ["fas", "fa-circle"] },
+            { type: 'simple-link', href: "/CONFCOM/product-hierarchy", label: "Arborescence", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/tva", label: "TVAs", faIcon: ["fas", "fa-circle"] },
             { type: 'simple-link', href: "/CONFCOM/promotion", label: "Promotions et cross sell", faIcon: ["fas", "fa-circle"] }
         ] },
-        { type: 'simple-link', href: "/", label: "Documents & médias", faIcon: ["fas", "fa-folder-open"] },
+        { type: 'simple-link', href: "/CONFCOM/ged", label: "Documents & médias", faIcon: ["fas", "fa-folder-open"] },
     ];
     let loadedBCC:BccMetaData|null = null;
     let filteredBccContextualizedNavTree:ContextualizedNavItemObj[] = [];
