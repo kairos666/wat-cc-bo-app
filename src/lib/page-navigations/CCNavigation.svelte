@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import smallLogo from "$lib/images/business-model.png";
     import { getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import { bccActionsAbility, type BccActions, BccSubject } from "../../utils/casl-abilities";
@@ -58,7 +59,7 @@
     ];
     let loadedBCC:BccMetaData|null = null;
     let filteredBccContextualizedNavTree:ContextualizedNavItemObj[] = [];
-    $: if($getLoadedBcc) { 
+    $: if(browser && $getLoadedBcc) { 
         loadedBCC = $getLoadedBcc ?? null;
         const bccAbilitySubject = new BccSubject(loadedBCC.state, loadedBCC.isWorkingInstance, loadedBCC.isArchived);
         filteredBccContextualizedNavTree = (loadedBCC !== null) ? bccContextualizedNavTree.filter(linkObj => {
@@ -76,7 +77,7 @@
     </a>
     <div class="sidebar os-host-scrollbar-horizontal-hidden">
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-compact nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <NavItem href="/CONFCOM" label="Accueil" faIcon={ ["fas", "fa-home"] } />
                 {#if loadedBCC}
                     <BccRelatedNavItems bccMetaData={ loadedBCC } childrenURL={ filteredBccContextualizedNavTree.map(child => child.href) }>

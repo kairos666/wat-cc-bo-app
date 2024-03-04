@@ -51,7 +51,7 @@
     </a>
     <div class="sidebar os-host-scrollbar-horizontal-hidden">
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-compact nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 {#each navTree as navItem}
                     {#if navItem.type === "simple-link"}
                         <NavItem href={ navItem.href } label={ navItem.label } faIcon={ navItem.faIcon } />

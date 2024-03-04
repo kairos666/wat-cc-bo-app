@@ -1,11 +1,11 @@
 import { defineAbility, PureAbility, type AnyMongoAbility } from "@casl/ability";
 
 //export type PageAccessAbility = PureAbility<string> & AnyMongoAbility; // string = page route URL (AnyMongoAbility resolve type issue https://github.com/stalniy/casl/issues/525)
-export type AppAccessAbility = PureAbility<'CC'|'NW'|'BO'> & AnyMongoAbility; // must keep in sync with access to routes
+export type AppAccessAbility = PureAbility<'CC'|'NW'|'BO'|'ADMIN-BO'> & AnyMongoAbility; // must keep in sync with access to routes
 
 export const appAbilityBuilder = (userRoles:string[]) => defineAbility<AppAccessAbility>((can, cannot) => {
     if(userRoles.includes('user')) { can("NW"); can("BO") } else { cannot("NW"); cannot("BO") }
-    if(userRoles.includes('admin-tech')) { can("CC") } else { cannot("CC") }
+    if(userRoles.includes('admin-tech')) { can("CC"); can("ADMIN-BO") } else { cannot("CC"); cannot("ADMIN-BO") }
 })
 
 /**

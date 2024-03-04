@@ -16,6 +16,7 @@
         <PopoverButton><CircleUserRound /><span class="ml-2">{ $navStore.profile?.firstName } { $navStore.profile?.lastName }</span></PopoverButton>
         <PopoverPanel style="position: absolute; z-index: 10;">
             <a href="/profile" class="dropdown-item"><i class="fas fa-id-card mr-2"></i>Afficher mon profil</a>
+            {#if $navStore.hasBOAdminAccess}<a href="/user-management" class="dropdown-item"><i class="fas fa-users-cog mr-2"></i>Gestion des utilisateurs</a>{/if}
             <a href="/" on:click={ disconnectUser } class="dropdown-item"><i class="fas fa-power-off mr-2"></i>Se déconnecter</a>
         </PopoverPanel>
     </Popover>
