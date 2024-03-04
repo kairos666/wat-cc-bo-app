@@ -1,5 +1,9 @@
+<script lang="ts">
+    import AbilityTruthChecker from "$lib/test/AbilityTruthChecker.svelte";
+</script>
+
 <svelte:head>
-	<title>CONFCOM - Bundle données CC</title>
+	<title>CONFCOM - BCC</title>
 </svelte:head>
 
 <div class="content-wrapper">
@@ -7,7 +11,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Bundles de données CONFCOM</h1>
+                    <h1 class="m-0">Bundle configurateur commercial - test des permissions</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -18,13 +22,19 @@
             </div>
         </div>
     </div>
-    <div class="content">
+    <div class="content pb-4">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-                    <p>Lorem ipsum</p>
+                    <p>Cette page est a retirer, c'est l'accueil CONFCOM qui sert à gérer les BCC</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <AbilityTruthChecker />
                 </div>
             </div>
         </div>
     </div>
 </div>
+

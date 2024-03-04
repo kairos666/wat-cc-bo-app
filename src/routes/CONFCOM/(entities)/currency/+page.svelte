@@ -22,6 +22,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
+                    <div class="alert alert-warning" role="alert">A spécifier TODO</div>
                     <p>Lorem ipsum</p>
                 </div>
             </div>

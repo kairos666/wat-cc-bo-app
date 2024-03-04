@@ -2,6 +2,7 @@ import { writable } from 'svelte/store';
 import { get } from 'svelte/store';
 import userProfilesData from '../data/user-profiles.json';
 import { browser } from '$app/environment';
+import { type AppAccessAbility, appAbilityBuilder } from '../utils/casl-abilities';
 
 const userProfileLocaleStorageTag:string = 'user-profile';
 
@@ -31,14 +32,23 @@ export type UserProfile = {
 }
 
 export type NavStore = {
-    isNavOpen:boolean,
+    isNavOpen:boolean
     profile: UserProfile|null
+    hasCCAccess:boolean
+    hasNWAccess:boolean
+    hasBOAccess:boolean
 }
 
 const initNavigationStore = () => {
+    const initialProfile:UserProfile|null = getLocallyStoredUserProfile();
+    let appAccess:AppAccessAbility = appAbilityBuilder(initialProfile?.roles ?? []);
+
     const initialNavigationStore:NavStore = {
         isNavOpen: true,
-        profile: getLocallyStoredUserProfile()
+        profile: initialProfile,
+        hasCCAccess: appAccess.can('CC'),
+        hasNWAccess: appAccess.can('NW'),
+        hasBOAccess: appAccess.can('BO')
     }
 
     const store =  writable(initialNavigationStore);
@@ -83,15 +93,39 @@ const initNavigationStore = () => {
         // get user profile
         const userProfile:UserProfile|null = (userProfilesData as any)[userID] ?? null;
 
-        if(userProfile !== null) {8
-            update(state => ({ ...state, profile: { ...userProfile }}));
+        if(userProfile !== null) {
+            // update abilities
+            appAccess = appAbilityBuilder(userProfile?.roles ?? []);
+
+            // update state
+            update(state => ({ 
+                ...state, 
+                profile: { ...userProfile },
+                hasCCAccess: appAccess.can('CC'),
+                hasNWAccess: appAccess.can('NW'),
+                hasBOAccess: appAccess.can('BO')
+            }));
+
+            // update local storage
             if(browser) localStorage.setItem(userProfileLocaleStorageTag, JSON.stringify(userProfile));
         } else {
             disconnectUser();
         }
     }
     function disconnectUser() {
-        update(state => ({ ...state, profile: null }));
+        // update abilities
+        appAccess = appAbilityBuilder([]);
+
+        // update state
+        update(state => ({ 
+            ...state, 
+            profile: null,
+            hasCCAccess: appAccess.can('CC'),
+            hasNWAccess: appAccess.can('NW'),
+            hasBOAccess: appAccess.can('BO')
+        }));
+
+        // update local storage
         if(browser) localStorage.setItem(userProfileLocaleStorageTag, "");
     }
 
