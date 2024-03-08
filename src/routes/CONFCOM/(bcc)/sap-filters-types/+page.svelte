@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>CONFCOM - Filtrage des données</title>
+	<title>CONFCOM - Filtrage & typage des données</title>
 </svelte:head>
 
 <div class="content-wrapper">
@@ -7,12 +7,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Filtres d'exclusion des données SAP</h1>
+                    <h1 class="m-0">Filtres d'exclusion, et types d'articles des données SAP</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/CONFCOM">Accueil</a></li>
-                        <li class="breadcrumb-item active">Filtres d'exclusion</li>
+                        <li class="breadcrumb-item active">Filtres & types</li>
                     </ol>
                 </div>
             </div>

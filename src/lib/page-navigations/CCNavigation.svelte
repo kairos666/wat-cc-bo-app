@@ -30,8 +30,7 @@
     }
 
     const bccContextualizedNavTree:ContextualizedNavItemObj[] = [ // 'delete'|'clone'|'filter & type'|'enrich'|'test'|'modelize'|'archive'|'unarchive'|'load'|'activate';
-        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-filter"] },
-        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-types", label: "Typage articles", faIcon: ["fas", "fa-cubes"] },
+        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-filters-types", label: "Filtres & types", faIcon: ["fas", "fa-filter"] },
         { type: 'contextualized-link', relatedAction: "modelize", href: "/CONFCOM/processus-modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-clipboard-check"] },
         { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/caracteristics", label: "Caractéristiques", faIcon: ["fas", "fa-ruler-combined"] },
         { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/catalog", label: "Catalogue d'articles", faIcon: ["fas", "fa-shopping-cart"] },
