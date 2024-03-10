@@ -28,6 +28,7 @@
 		"admin-lte": "3.2",
 		"date-fns": "^3.3.1",
 		"dexie": "^4.0.1-beta.11",
-		"lucide-svelte": "^0.335.0"
+		"lucide-svelte": "^0.335.0",
+		"papaparse": "^5.4.1"
 	}
 }
