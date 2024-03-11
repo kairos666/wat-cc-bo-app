@@ -42,6 +42,7 @@
         {/if}
     </div>
     <div class="card-body">
+        <slot />
         <form on:submit={ onImport }>
             <div class="form-group">
                 <label for={ `upload-csv-file-${ uuid }` }>{ label }</label>

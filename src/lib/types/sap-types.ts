@@ -40,3 +40,23 @@ export type SAP_Prices = {
     priceGroup: string // groupe article, index: 5
     price: number // prix base, index: 7
 }
+
+// filter & types
+export type SAP_Article_FiltersAndTypes = {
+    articleID:string
+    isExcluded: boolean
+    type: string
+}
+
+export type SAP_Article_FiltersAndTypes_EXPORT_ENTRY = { 
+    "Article":string, 
+    "Désignation article (FR)":string, 
+    "EXCLURE":string, 
+    "TYPE":string 
+}
+
+export type SAP_Carac_Filters = {
+    caracID: string
+    caracValues: string
+    isExcluded: boolean
+}
