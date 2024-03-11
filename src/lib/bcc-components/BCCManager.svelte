@@ -28,7 +28,7 @@
     const allActions:{ action:BccActions, cb: (targetBcc:BccMetaData) => void }[] = [
         { action: 'delete', cb: (targetBcc) => { deleteBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
         { action: 'clone', cb: (targetBcc) => { duplicateBccDialog.triggerOpenDialog(targetBcc.id, targetBcc.name) } },
-        { action: 'filter & type', cb: () => { goto('/CONFCOM/sap-filters') } },
+        { action: 'filter & type', cb: () => { goto('/CONFCOM/sap-filters-types') } },
         { action: 'enrich', cb: () => { goto('/CONFCOM/processus-enrich') } },
         { action: 'test', cb: (targetBcc) => {
             const testTarget:"loaded"|"active" = (targetBcc.state === 'actif') ? "active" : "loaded";

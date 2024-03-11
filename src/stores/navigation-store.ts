@@ -37,6 +37,7 @@ export type NavStore = {
     hasCCAccess:boolean
     hasNWAccess:boolean
     hasBOAccess:boolean
+    hasBOAdminAccess:boolean
 }
 
 const initNavigationStore = () => {
@@ -48,7 +49,8 @@ const initNavigationStore = () => {
         profile: initialProfile,
         hasCCAccess: appAccess.can('CC'),
         hasNWAccess: appAccess.can('NW'),
-        hasBOAccess: appAccess.can('BO')
+        hasBOAccess: appAccess.can('BO'),
+        hasBOAdminAccess : appAccess.can('ADMIN-BO')
     }
 
     const store =  writable(initialNavigationStore);
@@ -103,7 +105,8 @@ const initNavigationStore = () => {
                 profile: { ...userProfile },
                 hasCCAccess: appAccess.can('CC'),
                 hasNWAccess: appAccess.can('NW'),
-                hasBOAccess: appAccess.can('BO')
+                hasBOAccess: appAccess.can('BO'),
+                hasBOAdminAccess : appAccess.can('ADMIN-BO')
             }));
 
             // update local storage
@@ -122,7 +125,8 @@ const initNavigationStore = () => {
             profile: null,
             hasCCAccess: appAccess.can('CC'),
             hasNWAccess: appAccess.can('NW'),
-            hasBOAccess: appAccess.can('BO')
+            hasBOAccess: appAccess.can('BO'),
+            hasBOAdminAccess : appAccess.can('ADMIN-BO')
         }));
 
         // update local storage

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import smallLogo from "$lib/images/business-model.png";
     import { getLoadedBcc, type BccMetaData } from "../../stores/bcc-store";
     import { bccActionsAbility, type BccActions, BccSubject } from "../../utils/casl-abilities";
@@ -29,8 +30,7 @@
     }
 
     const bccContextualizedNavTree:ContextualizedNavItemObj[] = [ // 'delete'|'clone'|'filter & type'|'enrich'|'test'|'modelize'|'archive'|'unarchive'|'load'|'activate';
-        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-filters", label: "Filtres d'exclusion", faIcon: ["fas", "fa-filter"] },
-        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-types", label: "Typage articles", faIcon: ["fas", "fa-cubes"] },
+        { type: 'contextualized-link', relatedAction: "filter & type", href: "/CONFCOM/sap-filters-types", label: "Filtres & types", faIcon: ["fas", "fa-filter"] },
         { type: 'contextualized-link', relatedAction: "modelize", href: "/CONFCOM/processus-modelize", label: "Modéliser BCC", faIcon: ["fas", "fa-clipboard-check"] },
         { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/caracteristics", label: "Caractéristiques", faIcon: ["fas", "fa-ruler-combined"] },
         { type: 'contextualized-link', relatedAction: "enrich", href: "/CONFCOM/catalog", label: "Catalogue d'articles", faIcon: ["fas", "fa-shopping-cart"] },
@@ -58,7 +58,7 @@
     ];
     let loadedBCC:BccMetaData|null = null;
     let filteredBccContextualizedNavTree:ContextualizedNavItemObj[] = [];
-    $: if($getLoadedBcc) { 
+    $: if(browser && $getLoadedBcc) { 
         loadedBCC = $getLoadedBcc ?? null;
         const bccAbilitySubject = new BccSubject(loadedBCC.state, loadedBCC.isWorkingInstance, loadedBCC.isArchived);
         filteredBccContextualizedNavTree = (loadedBCC !== null) ? bccContextualizedNavTree.filter(linkObj => {
@@ -76,7 +76,7 @@
     </a>
     <div class="sidebar os-host-scrollbar-horizontal-hidden">
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-compact nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <NavItem href="/CONFCOM" label="Accueil" faIcon={ ["fas", "fa-home"] } />
                 {#if loadedBCC}
                     <BccRelatedNavItems bccMetaData={ loadedBCC } childrenURL={ filteredBccContextualizedNavTree.map(child => child.href) }>
