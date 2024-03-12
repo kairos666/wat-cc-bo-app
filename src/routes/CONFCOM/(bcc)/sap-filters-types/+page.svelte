@@ -124,26 +124,30 @@
                     </ol>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12 mt-4">
-                    <UploadFile title="Typage et filtrage d'articles" label="Mise à jour de la configuration d'articles" hasExportBtn isLoading={ isProcessing } on:import={ evt => { onArticlesFiltersAndTypesUpload(evt.detail) } } on:export={ onArticlesFiltersAndTypesExport }>
-                        <p>Mettre à jour la configuration des filtres d'exclusion et types assignés sur l'inventaire d'articles SAP. Seules les deux colonnes décrites ci-dessous sont à modifier, les autres informations servent à identifier les articles mentionnés.</p>
-                        <ul>
-                            <li>Colonne <span class="badge badge-secondary">EXCLURE</span> : 0 = conserver (par défaut) ou 1 = exclure</li>
-                            <li>Colonne <span class="badge badge-secondary">TYPE</span> : <span class="badge badge-light">profil de fond</span>, <span class="badge badge-light">escalier</span>, <span class="badge badge-light">échelle</span>, <span class="badge badge-light">banc immergé</span>, <span class="badge badge-light">liner</span>, <span class="badge badge-light">local technique</span>, <span class="badge badge-light">média filtrant</span>, <span class="badge badge-light">traitement</span>, <span class="badge badge-light">électrolyseur</span>, <span class="badge badge-light">régulateur PH</span>, <span class="badge badge-light">couvertures</span>, <span class="badge badge-light">pitons</span>, <span class="badge badge-light">enrouleur motorisé</span>, <span class="badge badge-light">enrouleur</span>, <span class="badge badge-light">margelle</span>, <span class="badge badge-light">éclairage</span>, <span class="badge badge-light">accessoire</span>, <span class="badge badge-light">prestation</span>, <span class="badge badge-light">produit racine</span></li>
-                        </ul>
-                        <hr />
-                    </UploadFile>
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <UploadFile title="Typage et filtrage d'articles" label="Mise à jour de la configuration d'articles" hasExportBtn isLoading={ isProcessing } on:import={ evt => { onArticlesFiltersAndTypesUpload(evt.detail) } } on:export={ onArticlesFiltersAndTypesExport } />
+                </div>
+                <div class="col-lg-6">
+                    <p>Mettre à jour la configuration des filtres d'exclusion et types assignés sur l'inventaire d'articles SAP. Seules les deux colonnes décrites ci-dessous sont à modifier, les autres informations servent à identifier les articles mentionnés.</p>
+                    <ul>
+                        <li>Colonne <span class="badge badge-secondary">EXCLURE</span> : 0 = conserver (par défaut) ou 1 = exclure</li>
+                        <li>Colonne <span class="badge badge-secondary">TYPE</span> : profil de fond, escalier, échelle, banc immergé, liner, local technique, média filtrant, traitement, électrolyseur, régulateur PH, couvertures, pitons, enrouleur motorisé, enrouleur, margelle, éclairage, accessoire, prestation, produit racine</li>
+                    </ul>
+                    <p class="text-muted">Attention importer une nouvelle configuration écrase la précédente version</p>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12 mt-4">
-                    <UploadFile title="Filtrage des valeurs de caractéristiques" label="Mise à jour de la configuration de caractéristiques" hasExportBtn isLoading={ isProcessing } on:import={ evt => { onCaracsFiltersUpload(evt.detail) } } on:export={ onCaracsFiltersExport }>
-                        <p>Mettre à jour la configuration des filtres d'exclusion de valeurs de caractéristiques. Seule la colonne <span class="badge badge-secondary badge-sm">EXCLURE</span> est à modifier, les autres informations servent à identifier les caractéristiques et valeurs mentionnées.</p>
-                        <p>Colonne <span class="badge badge-secondary">EXCLURE</span> : 0 = conserver (par défaut) ou 1 = exclure</p>
-                        <p>Une caractéristique ayant toutes ses valeurs exclues sera elle-même exclus</p>
-                        <hr />
-                    </UploadFile>
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <UploadFile title="Filtrage des valeurs de caractéristiques" label="Mise à jour de la configuration de caractéristiques" hasExportBtn isLoading={ isProcessing } on:import={ evt => { onCaracsFiltersUpload(evt.detail) } } on:export={ onCaracsFiltersExport } />
+                </div>
+                <div class="col-lg-6">
+                    <p>Mettre à jour la configuration des filtres d'exclusion de valeurs de caractéristiques. Seule la colonne <span class="badge badge-secondary badge-sm">EXCLURE</span> est à modifier, les autres informations servent à identifier les caractéristiques et valeurs mentionnées.</p>
+                    <p>Une caractéristique ayant toutes ses valeurs exclues sera elle-même exclus</p>
+                    <ul>
+                        <li>Colonne <span class="badge badge-secondary">EXCLURE</span> : 0 = conserver (par défaut) ou 1 = exclure</li>
+                    </ul>
+                    <p class="text-muted">Attention importer une nouvelle configuration écrase la précédente version</p>
                 </div>
             </div>
         </div>
