@@ -1,7 +1,7 @@
 <script lang="ts">
     import UploadFile from "$lib/utilitary-widget/UploadFile.svelte";
     import { parseCSV } from '$lib/scripts/csv-extractors';
-    import type { SAP_RAW_Article, SAP_Article, SAP_Object, SAP_RAW_Carac, SAP_Carac, SAP_Prices } from '$lib/types/sap-types';
+    import type { SAP_RAW_Article, SAP_Article, SAP_Object, SAP_RAW_Carac_Req3, SAP_RAW_Carac_Req5, SAP_Carac, SAP_Prices } from '$lib/types/sap-types';
     import { bulkUpsertSAPArticle, bulkUpsertSAPObject, bulkUpsertSAPCarac, bulkUpsertSAPPrices, clearAllSAPTables } from "../../../stores/sap-store";
     import _ from "lodash";
     
@@ -26,11 +26,20 @@
     };
 
     // entry builders - Object Carac link
-    const SAPObjToCaracLinkBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Carac => {
+    const SAPObjToCaracLinkBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Carac_Req3 => {
         return {
             objID: entry.data[1],
             caracID: entry.data[2],
             caracValue: entry.data[12]
+        }
+    };
+
+    // entry builders - Object Carac link
+    const SAPMoreCaracBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Carac_Req5 => {
+        return {
+            caracID: entry.data[0],
+            caracGrp: entry.data[1],
+            caracValue: entry.data[2]
         }
     };
 
@@ -66,12 +75,26 @@
     }
 
     // merge caracs and possible values (avoid duplicated carac entries)
-    const CaracCollectionBuilder = (rawEntries:SAP_RAW_Carac[]):SAP_Carac[] => {
-        return  Object.values(_.groupBy(rawEntries, (entry:SAP_RAW_Carac) => entry.caracID)).map((caracValueEntries:SAP_RAW_Carac[]) => {
+    const CaracCollectionBuilder = (rawEntries:SAP_RAW_Carac_Req3[]):SAP_Carac[] => {
+        return  Object.values(_.groupBy(rawEntries, (entry:SAP_RAW_Carac_Req3) => entry.caracID)).map((caracValueEntries:SAP_RAW_Carac_Req3[]) => {
             return {
                 caracID: caracValueEntries[0].caracID,
-                caracValues: Object.values(_.groupBy(caracValueEntries, (entry:SAP_RAW_Carac) => entry.caracValue)).map((objectEntries:SAP_RAW_Carac[]) => {
+                caracGrp: "",
+                caracValues: Object.values(_.groupBy(caracValueEntries, (entry:SAP_RAW_Carac_Req3) => entry.caracValue)).map((objectEntries:SAP_RAW_Carac_Req3[]) => {
                     return { value: objectEntries[0].caracValue, objLinks: [...new Set(objectEntries.map(entry => entry.objID))] }
+                })
+            }
+        }) 
+    };
+    
+    // merge caracs and possible values (avoid duplicated carac entries)
+    const MoreCaracCollectionBuilder = (rawEntries:SAP_RAW_Carac_Req5[]):SAP_Carac[] => {
+        return  Object.values(_.groupBy(rawEntries, (entry:SAP_RAW_Carac_Req5) => entry.caracID)).map((caracValueEntries:SAP_RAW_Carac_Req5[]) => {
+            return {
+                caracID: caracValueEntries[0].caracID,
+                caracGrp: caracValueEntries[0].caracGrp,
+                caracValues: Object.values(_.groupBy(caracValueEntries, (entry:SAP_RAW_Carac_Req5) => entry.caracValue)).map((objectEntries:SAP_RAW_Carac_Req5[]) => {
+                    return { value: objectEntries[0].caracValue, objLinks: [] }
                 })
             }
         }) 
@@ -103,8 +126,20 @@
     // upsert caracs
     function onCaracsUpload(file:File) {
         isProcessing = true;
-        parseCSV<SAP_RAW_Carac>(file, SAPObjToCaracLinkBuilder)
+        parseCSV<SAP_RAW_Carac_Req3>(file, SAPObjToCaracLinkBuilder)
             .then(CaracCollectionBuilder)
+            .then(bulkUpsertSAPCarac)
+            .then(() => {
+                isProcessing = false;
+            })
+            .catch(error => console.warn('error parsing CSV', error));
+    }
+
+    // upsert caracs (more caracs)
+    function onCaracsExtensionUpload(file:File) {
+        isProcessing = true;
+        parseCSV<SAP_RAW_Carac_Req5>(file, SAPMoreCaracBuilder)
+            .then(MoreCaracCollectionBuilder)
             .then(bulkUpsertSAPCarac)
             .then(() => {
                 isProcessing = false;
@@ -173,6 +208,11 @@
                 <div class="col-lg-6 mt-4">
                     <UploadFile title="OBJ CLASS CARAC" label="Mise à jour des Caractéristiques" isLoading={ isProcessing } on:import={ evt => { onCaracsUpload(evt.detail) } } />
                 </div>
+                <div class="col-lg-6 mt-4">
+                    <UploadFile title="ART CARAC VALEUR" label="Mise à jour des Caractéristiques (extension)" isLoading={ isProcessing } on:import={ evt => { onCaracsExtensionUpload(evt.detail) } } />
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-lg-6 mt-4">
                     <UploadFile title="TARIFS" label="Mise à jour des tarifs" isLoading={ isProcessing } on:import={ evt => { onPricesUpload(evt.detail) } } />
                 </div>

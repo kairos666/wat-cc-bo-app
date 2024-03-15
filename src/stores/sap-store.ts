@@ -18,7 +18,7 @@ class DexieSAP extends Dexie {
             caracs: '++caracID',
             prices: '++articleID',
             articlesFilterAndTypes: '++articleID',
-            caracsFilters: '++caracID'
+            caracsFilters: '++id, caracID, caracValue'
         });
     }
 }
@@ -78,6 +78,13 @@ export async function bulkUpsertSAPObject(entries:SAP_Object[]) {
 /**
  * SAP CARACTERISTICS
  */
+ export async function getAllSAPCaracteristics() {
+    try {
+        return await db.caracs.toArray();
+    } catch (error) {
+        throw new Error(`Failed to get ALL SAP Caracteristics`);
+    }
+}
 export async function bulkUpsertSAPCarac(entries:SAP_Carac[]) {
     try {
         await db.caracs.bulkPut(entries);
@@ -104,7 +111,7 @@ export async function bulkUpsertSAPPrices(entries:SAP_Prices[]) {
 /**
  * SAP filtres & types ARTICLES
  */
- export async function getAllSAPArticleFiltersAndTypes() {
+export async function getAllSAPArticleFiltersAndTypes() {
     try {
         return await db.articlesFilterAndTypes.toArray();
     } catch (error) {
@@ -120,6 +127,17 @@ export async function bulkUpsertSAPArticleFiltersAndTypes(entries:SAP_Article_Fi
         return;
     } catch (error) {
         throw new Error(`Failed to perform action on SAP DB article filters & types BULK UPSERT ${ entries.map(entry => entry.articleID).join(', ') } : ${ error }`);
+    }
+}
+
+/**
+ * SAP filtres & types CARACTERISTICS
+ */
+export async function getAllSAPCaracteristicFilters() {
+    try {
+        return await db.caracsFilters.toArray();
+    } catch (error) {
+        throw new Error(`Failed to get ALL SAP Caracs filters`);
     }
 }
 

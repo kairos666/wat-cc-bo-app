@@ -2,14 +2,14 @@
     import UploadFile from "$lib/utilitary-widget/UploadFile.svelte";
     import { parseCSV } from '$lib/scripts/csv-extractors';
     import  { csvExportFileToBrowser } from '$lib/scripts/csv-export-to-browser';
-    import type { SAP_Article_FiltersAndTypes, SAP_Carac_Filters, SAP_Article_FiltersAndTypes_EXPORT_ENTRY } from "$lib/types/sap-types";
-    import { bulkUpsertSAPArticleFiltersAndTypes, bulkUpsertSAPCaracFilters, getAllSAPArticles, getAllSAPArticleFiltersAndTypes } from "../../../../stores/sap-store";
+    import type { SAP_Article_FiltersAndTypes, SAP_Carac_Filters, SAP_Article_FiltersAndTypes_EXPORT_ENTRY, SAP_Carac_Filters_EXPORT_ENTRY } from "$lib/types/sap-types";
+    import { bulkUpsertSAPArticleFiltersAndTypes, bulkUpsertSAPCaracFilters, getAllSAPArticles, getAllSAPArticleFiltersAndTypes, getAllSAPCaracteristics, getAllSAPCaracteristicFilters } from "../../../../stores/sap-store";
     import Papa from 'papaparse';
     import _ from "lodash";
 
     // export - article filters and types
     async function onArticlesFiltersAndTypesExport() {
-        isProcessing = true
+        isProcessing = true;
         // 1. get all articles + get all filters and types (may be empty)
         const [allArticles, allFiltersAndTypes] = await Promise.all([
             getAllSAPArticles(),
@@ -20,7 +20,7 @@
             // convert all to target data with defaults (no config for filters and types case)
             return {
                 "Article": entry.articleID, 
-                "Désignation article (FR)": entry.label.find(labelEntry => (labelEntry.language === "FR"))?.name ?? "Manquant", 
+                "Désignation article": entry.label.find(labelEntry => (labelEntry.language === "FR"))?.name ?? "Manquant", 
                 "EXCLURE": "0", 
                 "TYPE": ""
             }
@@ -44,15 +44,33 @@
     }
 
     // export - carac filters
-    function onCaracsFiltersExport() {
-        const csvString:string = Papa.unparse([
-            { caracID: "carac A", caracValues: "value A1", isExcluded: "1" },
-            { caracID: "carac A", caracValues: "value A2", isExcluded: "0" },
-            { caracID: "carac B", caracValues: "value B1", isExcluded: "0" },
-            { caracID: "carac B", caracValues: "value B2", isExcluded: "0" },
-            { caracID: "carac B", caracValues: "value B3", isExcluded: "0" }
-        ], { delimiter: ";" });
+    async function onCaracsFiltersExport() {
+        isProcessing = true;
+        // 1. get all carcateristics and their values + get all filters (may be empty)
+        const [allCaracs, allCaracFilters] = await Promise.all([
+            getAllSAPCaracteristics(),
+            getAllSAPCaracteristicFilters()
+        ]);
+        // 2. merge and convert to target format
+        let resultExportableData:SAP_Carac_Filters_EXPORT_ENTRY[] = allCaracs.reduce((acc, entry) => {
+            // convert all to target data with defaults (no config for filters and types case)
+            return [...acc, ...entry.caracValues.map(valueEntry => ({ "Caractéristique": entry.caracID, "Valeur de la caractéristique": valueEntry.value, "EXCLURE": "0" }))];
+        }, ([] as SAP_Carac_Filters_EXPORT_ENTRY[]));
+        if(allCaracFilters.length > 0) {
+            // filters and types already loaded in app, apply current configuration
+            resultExportableData = resultExportableData.map(entry => {
+                const isExcluded:boolean = !!allCaracFilters.find(filterEntry => (filterEntry.caracID === entry["Caractéristique"] && filterEntry.caracValue === entry["Valeur de la caractéristique"])) ?? false;
+
+                return {
+                    ...entry,
+                    "EXCLURE": (isExcluded) ? "1" : "0"
+                };
+            })
+        }
+        const csvString:string = Papa.unparse(resultExportableData, { delimiter: ";" });
+        // 3. trigger CSV download
         csvExportFileToBrowser(csvString, 'caracteristics-filter');
+        isProcessing = false;
     }
 
     // entry builders - article filters and types
@@ -65,10 +83,11 @@
     };
 
     // entry builders - carac filters
-    const SAPCaracFilterBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_Carac_Filters => {
+    type SAP_Carac_Filters_Extended =  SAP_Carac_Filters & { isExcluded:boolean };
+    const SAPCaracFilterBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_Carac_Filters_Extended => {
         return {
             caracID: entry.data[0],
-            caracValues: entry.data[1],
+            caracValue: entry.data[1],
             isExcluded: (entry.data[2] === "1")
         }
     };
@@ -76,7 +95,7 @@
     // upsert articles
     function onArticlesFiltersAndTypesUpload(file:File) {
         isProcessing = true;
-        parseCSV<SAP_Article_FiltersAndTypes>(file, SAPArticleFilterAndTypeBuilder, ["Article", "Désignation article (FR)", "EXCLURE", "TYPE"])
+        parseCSV<SAP_Article_FiltersAndTypes>(file, SAPArticleFilterAndTypeBuilder, ["Article", "Désignation article", "EXCLURE", "TYPE"])
             .then(bulkUpsertSAPArticleFiltersAndTypes)
             .catch(error => console.warn('error parsing CSV', error))
             .finally(() => { isProcessing = false; });
@@ -85,7 +104,8 @@
     // upsert articles
     function onCaracsFiltersUpload(file:File) {
         isProcessing = true;
-        parseCSV<SAP_Carac_Filters>(file, SAPCaracFilterBuilder, ["Caractéristique", "Valeur de la caractéristique", "EXCLURE"])
+        parseCSV<SAP_Carac_Filters_Extended>(file, SAPCaracFilterBuilder, ["Caractéristique", "Valeur de la caractéristique", "EXCLURE"])
+            .then(results => results.filter(entry => entry.isExcluded).map(entry => ({ caracID: entry.caracID, caracValue: entry.caracValue }))) // only keeps excluded values
             .then(bulkUpsertSAPCaracFilters)
             .catch(error => console.warn('error parsing CSV', error))
             .finally(() => { isProcessing = false; });
