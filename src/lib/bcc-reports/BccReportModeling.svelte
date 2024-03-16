@@ -1,9 +1,9 @@
 <script lang="ts">
     import { getLoadedBcc } from "../../stores/bcc-store";
 </script>
-
+ 
 {#if $getLoadedBcc}
-<div class="row mt-5">
+<div class="row">
     <div class="col-lg-6">
         <div class="card card-secondary">
             <div class="card-header">
@@ -125,7 +125,7 @@
     <div class="col-lg-6">
         <div class="card card-outline card-warning">
             <div class="card-header">
-                <h3 class="card-title d-flex justify-content-between">
+                <h3 class="card-title float-none d-flex justify-content-between">
                     <span><span class="badge badge-pill badge-warning mr-1">x 5800</span>Articles orphelins</span>
                     <span><i class="fas fa-shopping-cart text-info"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-link"></i></span>
                 </h3>
@@ -144,7 +144,7 @@
     <div class="col-lg-6">
         <div class="card card-outline card-warning">
             <div class="card-header">
-                <h3 class="card-title d-flex justify-content-between">
+                <h3 class="card-title float-none d-flex justify-content-between">
                     <span><span class="badge badge-pill badge-warning mr-1">x 1245</span>Articles orphelins bis</span>
                     <span><i class="fas fa-shopping-cart text-info"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-link"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-th"></i></span>
                 </h3>
@@ -165,7 +165,7 @@
     <div class="col-lg-6">
         <div class="card card-outline card-success">
             <div class="card-header">
-                <h3 class="card-title d-flex justify-content-between">
+                <h3 class="card-title float-none d-flex justify-content-between">
                     <span><span class="badge badge-pill badge-success mr-1">x 0</span>Objets inutiles</span>
                     <span><i class="fas fa-shopping-cart"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-link text-info"></i><i class="fas fa-long-arrow-alt-left text-danger mx-2"></i><i class="fas fa-th"></i></span>
                 </h3>
@@ -184,7 +184,7 @@
     <div class="col-lg-6">
         <div class="card card-outline card-info">
             <div class="card-header">
-                <h3 class="card-title d-flex justify-content-between">
+                <h3 class="card-title float-none d-flex justify-content-between">
                     <span><span class="badge badge-pill badge-info mr-1">x 72</span>Caractéristiques associées au produit racine</span>
                     <span><i class="fas fas fa-star"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-link"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-th text-info"></i></span>
                 </h3>
@@ -199,6 +199,12 @@
                 </details>
             </div>
         </div>
+    </div>
+</div>
+{:else}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="alert alert-info" role="alert">Rapport non disponible</div>
     </div>
 </div>
 {/if}

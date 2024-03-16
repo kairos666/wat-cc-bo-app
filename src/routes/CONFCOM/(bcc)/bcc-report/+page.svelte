@@ -1,7 +1,8 @@
 <script>
-    import BccReportUnmodelized from "$lib/bcc-reports/BccReportUnmodelized.svelte";
+    import BccReportUnmodelized from "$lib/bcc-reports/BccReportModeling.svelte";
     import { format } from "date-fns";
     import { getLoadedBcc } from "../../../../stores/bcc-store";
+    import BccReports from "$lib/bcc-reports/BccReports.svelte";
 </script>
 
 <svelte:head>
@@ -41,15 +42,7 @@
                 </div>
             </div>
             {/if}
-            {#if ($getLoadedBcc && ($getLoadedBcc.state === "initié" || $getLoadedBcc.state === "nettoyé & typé"))}
-            <BccReportUnmodelized />
-            {:else if ($getLoadedBcc && ($getLoadedBcc.state === "modélisé" || $getLoadedBcc.state === "prêt" || $getLoadedBcc.state === "actif"))}
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Rapport BCC modélisé ou prêt ou actif</p>
-                </div>
-            </div>
-            {/if}
+            <BccReports />
         </div>
     </div>
 </div>
