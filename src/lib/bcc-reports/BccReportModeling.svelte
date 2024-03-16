@@ -1,20 +1,20 @@
 <script lang="ts">
-    import { getLoadedBcc } from "../../stores/bcc-store";
+    import { reportStore } from "../../stores/bcc-report-modelization";
 </script>
  
-{#if $getLoadedBcc}
+{#if $reportStore}
 <div class="row">
     <div class="col-lg-6">
         <div class="card card-secondary">
             <div class="card-header">
-                <h2 class="card-title"><i class="fas fa-shopping-cart mr-3"></i><span class="badge badge-pill badge-light mr-3">x 3190</span> Articles</h2>
+                <h2 class="card-title"><i class="fas fa-shopping-cart mr-3"></i><span class="badge badge-pill badge-light mr-3">x { $reportStore.articles.keptCount }</span> Articles</h2>
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b>x 123</b> ZMAT (extraction brute SAP)</li>
-                    <li class="list-group-item"><b>x 3256</b> T800 (extraction brute SAP)</li>
-                    <li class="list-group-item"><b>x 459</b> filtres articles définis</li>
-                    <li class="list-group-item"><b>x 4598</b> types articles définis</li>
+                    <li class="list-group-item"><b>x { $reportStore.articles.zmatCount }</b> ZMAT (extraction brute SAP)</li>
+                    <li class="list-group-item"><b>x { $reportStore.articles.t800Count }</b> T800 (extraction brute SAP)</li>
+                    <li class="list-group-item"><b>x { $reportStore.articles.filterCount }</b> filtres articles définis</li>
+                    <li class="list-group-item"><b>x { $reportStore.articles.typesCount }</b> types articles définis</li>
                 </ul>
             </div>
             <details class="card-footer">
@@ -35,8 +35,8 @@
             <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Articles retenus</span>
-                <div class="progress"><div class="progress-bar bg-info" style="width: 98%"></div></div>
-                <span class="progress-description text-muted">98% des articles retenus (x123 exclus)</span>
+                <div class="progress"><div class="progress-bar bg-info" style={ `width: ${ $reportStore.articles.percFiltererd }%` }></div></div>
+                <span class="progress-description text-muted">{ $reportStore.articles.percFiltererd }% des articles retenus</span>
             </div>
         </div>
         <div class="info-box">
@@ -62,13 +62,13 @@
     <div class="col-lg-6">
         <div class="card card-secondary">
             <div class="card-header">
-                <h2 class="card-title"><i class="fas fa-th mr-3"></i><span class="badge badge-pill badge-light mr-3">x 871</span> Caractéristiques<span class="badge badge-pill badge-light ml-5 mr-3">x 7767</span> Valeurs</h2>
+                <h2 class="card-title"><i class="fas fa-th mr-3"></i><span class="badge badge-pill badge-light mr-3">x { $reportStore.caracteristics.caracCount }</span> Caractéristiques<span class="badge badge-pill badge-light ml-5 mr-3">x { $reportStore.caracteristics.caracValueCount }</span> Valeurs</h2>
             </div>
             <div class="card-body">
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><b>x 879</b> caractéristiques (extraction brute SAP)</li>
-                    <li class="list-group-item"><b>x 7865</b> valeurs (extraction brute SAP)</li>
-                    <li class="list-group-item"><b>x 123</b> filtres de valeurs définis</li>
+                    <li class="list-group-item"><b>x { $reportStore.caracteristics.caracCount }</b> caractéristiques (extraction brute SAP)</li>
+                    <li class="list-group-item"><b>x { $reportStore.caracteristics.caracValueCount }</b> valeurs (extraction brute SAP)</li>
+                    <li class="list-group-item"><b>x { $reportStore.caracteristics.filterCount }</b> filtres de valeurs définis</li>
                 </ul>
             </div>
         </div>
@@ -79,16 +79,16 @@
             <span class="info-box-icon bg-info"><i class="fas fa-th"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Caractéristiques retenues</span>
-                <div class="progress"><div class="progress-bar bg-info" style="width: 99%"></div></div>
-                <span class="progress-description text-muted">99% des caractéristiques retenus (x8 exclus)</span>
+                <div class="progress"><div class="progress-bar bg-info" style={ `width: ${ $reportStore.caracteristics.percFilteredCarac }%` }></div></div>
+                <span class="progress-description text-muted">{ $reportStore.caracteristics.percFilteredCarac }% des caractéristiques retenus (x{ $reportStore.caracteristics.caracCount - $reportStore.caracteristics.keptCaracCount } exclus)</span>
             </div>
         </div>
         <div class="info-box">
             <span class="info-box-icon bg-info"><i class="fas fa-th"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Valeurs de caractéristiques retenues</span>
-                <div class="progress"><div class="progress-bar bg-info" style="width: 98%"></div></div>
-                <span class="progress-description text-muted">98% des valeurs des caractéristiques restantes retenues (x92 exclus)</span>
+                <div class="progress"><div class="progress-bar bg-info" style={ `width: ${ $reportStore.caracteristics.percFilteredCaracValue }%` }></div></div>
+                <span class="progress-description text-muted">{ $reportStore.caracteristics.percFilteredCaracValue }% des valeurs des caractéristiques restantes retenues (x{ $reportStore.caracteristics.caracValueCount - $reportStore.caracteristics.keptCaracValueCount } exclus)</span>
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@
         <div class="info-box bg-secondary">
             <span class="info-box-icon"><i class="fas fa-link"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text"><span class="badge badge-pill badge-light mr-3">x 879</span> Objets SAP</span>
+                <span class="info-box-text"><span class="badge badge-pill badge-light mr-3">x { $reportStore.objects.objectCount }</span> Objets SAP</span>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
         <div class="info-box bg-secondary">
             <span class="info-box-icon"><i class="fas fa-euro-sign"></i></span>
             <div class="info-box-content">
-                <span class="info-box-text"><span class="badge badge-pill badge-light mr-3">x 15800</span> Tarifs SAP</span>
+                <span class="info-box-text"><span class="badge badge-pill badge-light mr-3">x { $reportStore.prices.priceCount }</span> Tarifs SAP</span>
             </div>
         </div>
     </div>

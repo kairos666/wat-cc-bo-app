@@ -1,5 +1,5 @@
 import type { SAP_Article, SAP_Object, SAP_Carac, SAP_Prices, SAP_Article_FiltersAndTypes, SAP_Carac_Filters } from '$lib/types/sap-types';
-import Dexie, { type Table } from 'dexie';
+import Dexie, { liveQuery, type Table } from 'dexie';
 
 // INDEXDB handler class
 class DexieSAP extends Dexie {
@@ -23,6 +23,14 @@ class DexieSAP extends Dexie {
     }
 }
 const db = new DexieSAP();
+
+// LIVE QUERIES
+export const sapArticles = liveQuery(() => db.articles.toArray());
+export const sapObjects = liveQuery(() => db.objects.toArray());
+export const sapCaracs = liveQuery(() => db.caracs.toArray());
+export const sapPrices = liveQuery(() => db.prices.toArray());
+export const sapArticlesFilterAndTypes = liveQuery(() => db.articlesFilterAndTypes.toArray());
+export const sapCaracFilters = liveQuery(() => db.caracsFilters.toArray());
 
 export async function clearAllSAPTables() {
     try {
