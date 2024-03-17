@@ -1,5 +1,18 @@
 <script lang="ts">
     import { reportStore } from "../../stores/bcc-report-modelization";
+
+    let allKeptArticlesAreTypes:boolean = false;
+    let oneAndOnlyOneRootProduct:boolean = false;
+    let rootProduct:any|null = null;
+
+    $: if($reportStore) {
+        allKeptArticlesAreTypes = ($reportStore.articles.typesCount === $reportStore.articles.keptCount);
+        const foundRootProducts = $reportStore.articles.groupedByType.find(entry => entry.type === "produit racine");
+        oneAndOnlyOneRootProduct = (foundRootProducts !== undefined && foundRootProducts.count === 1);
+        rootProduct = (oneAndOnlyOneRootProduct)
+            ? foundRootProducts?.articles[0]
+            : null;
+    }
 </script>
  
 {#if $reportStore}
@@ -20,11 +33,13 @@
             <details class="card-footer">
                 <summary class="text-muted">Distribution des articles par types</summary>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-transparent"><b>x 1</b> produit racine</li>
-                    <li class="list-group-item bg-transparent"><b>x 450</b> liner</li>
-                    <li class="list-group-item bg-transparent"><b>x 986</b> margelle</li>
-                    <li class="list-group-item bg-transparent">...</li>
-                    <li class="list-group-item bg-transparent"><span class="badge badge-pill badge-danger mr-1">x 1199</span><i>non typé</i></li>
+                    {#each $reportStore.articles.groupedByType ?? [] as typeEntry}
+                        {#if typeEntry.type !== "null"}
+                        <li class="list-group-item bg-transparent"><b>x { typeEntry.count }</b> { typeEntry.type }</li>
+                        {:else}
+                        <li class="list-group-item bg-transparent"><span class="badge badge-pill badge-danger mr-1">x { typeEntry.count }</span><i>non typé</i></li>
+                        {/if}
+                    {/each}
                 </ul>
             </details>
         </div>
@@ -40,20 +55,24 @@
             </div>
         </div>
         <div class="info-box">
-            <span class="info-box-icon bg-success"><i class="fas fa-star"></i></span>
+            <span class="info-box-icon" class:bg-success={ oneAndOnlyOneRootProduct }  class:bg-danger={ !oneAndOnlyOneRootProduct }><i class="fas fa-star"></i></span>
             <!-- color change when 0 or more than 1 -->
             <div class="info-box-content">
                 <span class="info-box-text">Produit racine</span>
-                <span class="info-box-number">Article WATERAIR / objet N° 00000455998</span>
+                {#if (rootProduct !== null)}
+                <span class="info-box-number">Article { rootProduct.articleID }</span>
+                {:else}
+                <span class="info-box-number">Article racine, non unique ou non trouvé</span>
+                {/if}
             </div>
         </div>
         <div class="info-box">
             <!-- color change when 100% -->
-            <span class="info-box-icon bg-danger"><i class="fas fa-layer-group"></i></span>
+            <span class="info-box-icon" class:bg-success={ allKeptArticlesAreTypes }  class:bg-danger={ !allKeptArticlesAreTypes }><i class="fas fa-layer-group"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Typage des articles retenus</span>
-                <div class="progress"><div class="progress-bar bg-danger" style="width: 70%"></div></div>
-                <span class="progress-description text-muted">70% des articles retenus typés</span>
+                <div class="progress"><div class="progress-bar" class:bg-success={ allKeptArticlesAreTypes }  class:bg-danger={ !allKeptArticlesAreTypes } style={ `width: ${ $reportStore.articles.percTyped }%` }></div></div>
+                <span class="progress-description text-muted">{ $reportStore.articles.percTyped }% des articles retenus typés</span>
             </div>
         </div>
     </div>

@@ -2,6 +2,8 @@ import { readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { combineLatest, map, Observable } from 'rxjs';
 import { sapArticles, sapArticlesFilterAndTypes, sapCaracFilters, sapCaracs, sapObjects, sapPrices } from './sap-store';
+import type { SAP_Article, SAP_Article_FiltersAndTypes } from '$lib/types/sap-types';
+import _ from 'lodash';
 
 export type ReportData = {
     articles: {
@@ -10,9 +12,10 @@ export type ReportData = {
         totalCount: number
         filterCount: number
         typesCount: number
-        groupedByTypeCount: { type:string, count:number }[]
+        groupedByType: { type:string, count:number, articles:TypedArticle[] }[]
         keptCount: number
         percFiltererd: number
+        percTyped: number
     }
     caracteristics: {
         caracCount: number
@@ -31,19 +34,57 @@ export type ReportData = {
     }
 }
 
+type TypedArticle = SAP_Article & { type: string|null }
+
 // db live query report pipe
 const modelizeReportObservable = function():Observable<ReportData> {
     return combineLatest([sapArticles, sapObjects, sapCaracs, sapPrices, sapArticlesFilterAndTypes, sapCaracFilters]).pipe(
         map(([articles, objects, caracs, prices, aFiltersTypes, cFilters]) => {
-            // articles
+            // all articles
             const zmatCount:number = articles.filter(entry => entry.tyar === "ZMAT").length;
             const t800Count:number = articles.filter(entry => entry.tyar === "T800").length;
             const totalCount:number = articles.length;
-            const afilterCount:number = aFiltersTypes.filter(entry => entry.isExcluded).length;
-            const typesCount:number = aFiltersTypes.filter(entry => entry.type !== "").length;
-            const keptCount:number = totalCount - afilterCount;
+            // only included articles
+            const filteredTypedArticles:TypedArticle[] = (articles.map(entry => {
+                const { articleID } = entry;
+                let foundFilterTypeEntry:SAP_Article_FiltersAndTypes = aFiltersTypes.find(ftEntry => ftEntry.articleID === articleID) ?? { articleID, isExcluded: false, type: "" };
+                const finalType:string|null = (foundFilterTypeEntry.type !== "")
+                    ? foundFilterTypeEntry.type
+                    : null;
+
+                return (!foundFilterTypeEntry.isExcluded)
+                    ? { ...entry, type: finalType }
+                    : null
+            }).filter(entry => entry !== null) as TypedArticle[]);
+            const groupedByTypesFilteredArticles = _.groupBy(filteredTypedArticles, entry => entry.type);
+            const afilterCount:number = totalCount - filteredTypedArticles.length;
+            const keptCount:number = filteredTypedArticles.length;
             const percFiltererd:number = (totalCount > 0)
                 ? Math.round(10000 * (keptCount / totalCount)) / 100
+                : 0;
+            const groupedByType:{ type:string, count:number, articles:TypedArticle[] }[] = Object.entries(groupedByTypesFilteredArticles)
+                .map(([type, articles]) => ({ type, count: articles.length, articles  }))
+                .sort((a, b) => (a.type === "null" && b.type === "produit racine") 
+                    ? -1
+                    : (a.type === "produit racine" && b.type === "null")
+                    ? 1
+                    : (a.type === "produit racine")
+                    ? -1
+                    : (a.type === "null")
+                    ? -1
+                    : (b.type === "produit racine")
+                    ? 1
+                    : (b.type === "null")
+                    ? 1
+                    : (a.type > b.type) 
+                    ? 1 
+                    : (a.type < b.type) 
+                    ? -1 
+                    : 0
+                );
+            const typesCount:number = filteredTypedArticles.filter(entry => entry.type !== null).length;
+            const percTyped:number = (keptCount > 0)
+                ? Math.round(10000 * (typesCount / keptCount)) / 100
                 : 0;
 
             // caracteristics
@@ -68,9 +109,10 @@ const modelizeReportObservable = function():Observable<ReportData> {
                     totalCount,
                     filterCount: afilterCount,
                     typesCount,
-                    groupedByTypeCount: [],
+                    groupedByType,
                     keptCount,
-                    percFiltererd
+                    percFiltererd,
+                    percTyped
                 },
                 caracteristics: {
                     caracCount,
@@ -100,9 +142,10 @@ const initReportStore = () => {
             totalCount: 0,
             filterCount: 0,
             typesCount: 0,
-            groupedByTypeCount: [],
+            groupedByType: [],
             keptCount: 0,
-            percFiltererd: 0
+            percFiltererd: 0,
+            percTyped: 0
         },
         caracteristics: {
             caracCount: 0,
