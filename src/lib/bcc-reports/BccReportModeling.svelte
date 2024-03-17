@@ -107,7 +107,7 @@
             <div class="info-box-content">
                 <span class="info-box-text">Valeurs de caractéristiques retenues</span>
                 <div class="progress"><div class="progress-bar bg-info" style={ `width: ${ $reportStore.caracteristics.percFilteredCaracValue }%` }></div></div>
-                <span class="progress-description text-muted">{ $reportStore.caracteristics.percFilteredCaracValue }% des valeurs des caractéristiques restantes retenues (x{ $reportStore.caracteristics.caracValueCount - $reportStore.caracteristics.keptCaracValueCount } exclus)</span>
+                <span class="progress-description text-muted">{ $reportStore.caracteristics.percFilteredCaracValue }% des valeurs de caractéristiques retenues (x{ $reportStore.caracteristics.caracValueCount - $reportStore.caracteristics.keptCaracValueCount } exclus)</span>
             </div>
         </div>
     </div>

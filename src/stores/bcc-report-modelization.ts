@@ -2,7 +2,7 @@ import { readable } from 'svelte/store';
 import { browser } from '$app/environment';
 import { combineLatest, map, Observable } from 'rxjs';
 import { sapArticles, sapArticlesFilterAndTypes, sapCaracFilters, sapCaracs, sapObjects, sapPrices } from './sap-store';
-import type { SAP_Article, SAP_Article_FiltersAndTypes } from '$lib/types/sap-types';
+import type { SAP_Article, SAP_Article_FiltersAndTypes, SAP_Carac } from '$lib/types/sap-types';
 import _ from 'lodash';
 
 export type ReportData = {
@@ -87,14 +87,29 @@ const modelizeReportObservable = function():Observable<ReportData> {
                 ? Math.round(10000 * (typesCount / keptCount)) / 100
                 : 0;
 
-            // caracteristics
+            // all caracteristics
             const caracCount:number = caracs.length;
             const caracValueCount:number = caracs.reduce((count, curr) => count + curr.caracValues.length, 0);
+            
+            // only included caracteristics
+            const filteredCaracs:SAP_Carac[] = (caracs.map((entry) => {
+                const { caracID, caracValues } = entry;
+                // remove all filtered entries from value
+                const filteredCaracValues = caracValues.filter(({ value }) => !cFilters.some(filter => (filter.caracID === caracID && filter.caracValue === value)));
+
+                return (filteredCaracValues.length > 0)
+                    ? { ...entry, caracValues: filteredCaracValues }
+                    : null;
+            }).filter(entry => entry !== null) as SAP_Carac[]);
             const cfilterCount:number = cFilters.length;
-            const keptCaracCount:number = 0;
-            const keptCaracValueCount:number = caracValueCount - cfilterCount;
-            const percFilteredCarac:number = 0;
-            const percFilteredCaracValue:number = 0;
+            const keptCaracValueCount:number = filteredCaracs.reduce((count, curr) => count + curr.caracValues.length, 0);
+            const keptCaracCount:number = filteredCaracs.length;
+            const percFilteredCarac:number = (caracCount > 0)
+                ? Math.round(10000 * (keptCaracCount / caracCount)) / 100
+                : 0;
+            const percFilteredCaracValue:number = (caracValueCount > 0)
+                ? Math.round(10000 * (keptCaracValueCount / caracValueCount)) / 100
+                : 0;
 
             // objects
             const objectCount:number = objects.length;
