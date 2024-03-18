@@ -7,6 +7,7 @@
     
     // entry builders - Article
     const SAPRawArticleBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Article => {
+        //console.log(`articleID: ${entry.data[0]} | tyar: ${entry.data[3]} | language: ${entry.data[4]} | label: ${entry.data[5]} | hierarchy: ${entry.data[9]} | articleGroup: ${entry.data[10]}`);
         return {
             articleID: entry.data[0],
             tyar: entry.data[3],
@@ -19,6 +20,7 @@
 
     // entry builders - Object
     const SAPObjectBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_Object => {
+        //console.log(`articleID: ${entry.data[2]} | objID: ${entry.data[3]}`);
         return {
             articleID: entry.data[2],
             objID: entry.data[3]
@@ -27,6 +29,7 @@
 
     // entry builders - Object Carac link
     const SAPObjToCaracLinkBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Carac_Req3 => {
+        //console.log(`objID: ${entry.data[1]} | caracID: ${entry.data[2]} | caracValue: ${entry.data[12]}`);
         return {
             objID: entry.data[1],
             caracID: entry.data[2],
@@ -36,6 +39,7 @@
 
     // entry builders - Object Carac link
     const SAPMoreCaracBuilder = (entry:Papa.ParseStepResult<string[]>):SAP_RAW_Carac_Req5 => {
+        //console.log(`caracID: ${entry.data[0]} | caracGrp: ${entry.data[1]} | caracValue: ${entry.data[2]}`);
         return {
             caracID: entry.data[0],
             caracGrp: entry.data[1],
@@ -209,7 +213,8 @@
                     <UploadFile title="OBJ CLASS CARAC" label="Mise à jour des Caractéristiques" isLoading={ isProcessing } on:import={ evt => { onCaracsUpload(evt.detail) } } />
                 </div>
                 <div class="col-lg-6 mt-4">
-                    <UploadFile title="ART CARAC VALEUR" label="Mise à jour des Caractéristiques (extension)" isLoading={ isProcessing } on:import={ evt => { onCaracsExtensionUpload(evt.detail) } } />
+                    <div class="alert alert-danger" role="alert">Aucun lien objet fourni dans ce fichier</div>
+                    <UploadFile title="ART CARAC VALEUR" label="Mise à jour des Caractéristiques (extension)" isLoading={ true } on:import={ evt => { onCaracsExtensionUpload(evt.detail) } } />
                 </div>
             </div>
             <div class="row">
