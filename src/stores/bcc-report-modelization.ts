@@ -42,10 +42,11 @@ export type ReportData = {
 }
 
 type TypedArticle = SAP_Article & { type: string|null }
-type LinkedArticle = SAP_Article & { 
+type LinkedArticle = { 
+    articleID: string
+    tyar: string
     objID: string|null
-    hasCaracLinks: boolean
-    caracLinks: { caracID: string, caracValues: string[] }[]
+    caracLinks: { carac: string, caracValues: string[] }[]|null
 }
 
 // db live query report pipe
@@ -129,12 +130,40 @@ const modelizeReportObservable = function():Observable<ReportData> {
             // prices
             const priceCount:number = prices.length;
 
-            // analytics
-            const linkedZmatCount:number = 0;
-            const linkedT800Count:number = 0;
-            const linkedObjectCount:number = 0;
-            const linkedCaracCount:number = 0;
-            const linkedCaracValueCount:number = 0;
+            // analytics (filters applied)
+            const allLinkedArticlesArray:LinkedArticle[] = filteredTypedArticles
+                .map(aEntry => ({ articleID: aEntry.articleID, tyar: aEntry.tyar }))
+                .map(aEntry => {
+                    const objID = objects.find(oEntry => oEntry.articleID === aEntry.articleID)?.objID ?? null;
+
+                    return { ...aEntry, objID };
+                })
+                .map(aEntry => {
+                    // leave early if no objID
+                    if(aEntry.objID === null) return { ...aEntry, caracLinks: null };
+
+                    const matchingCaracs = filteredCaracs.reduce((matchingCaracs, carac) => {
+                        const { caracID, caracValues } = carac;
+                        const matchingCaracValues:string[] = caracValues
+                            .filter(cvEntry => cvEntry.objLinks.includes((aEntry.objID as string)))
+                            .map(cvEntry => cvEntry.value);
+
+                        return (matchingCaracValues.length > 0)
+                            ? [...matchingCaracs, { carac: caracID, caracValues: matchingCaracValues }]
+                            : matchingCaracs;
+                    }, ([] as { carac: string, caracValues: string[] }[]));
+
+                    return (matchingCaracs.length > 0)
+                        ? { ...aEntry, caracLinks: matchingCaracs }
+                        : { ...aEntry, caracLinks: null };
+                })
+            const fullyLinkedArticlesArray:LinkedArticle[] = allLinkedArticlesArray.filter(entry => (entry.objID !== null && entry.caracLinks !== null));
+            const caracLinks:{ carac: string, caracValues: string[] }[] = (fullyLinkedArticlesArray.map(entry => entry.caracLinks) as { carac: string, caracValues: string[] }[][]).reduce((caracs, entry) => [...caracs, ...entry], ([] as { carac: string, caracValues: string[] }[]));
+            const linkedZmatCount:number = fullyLinkedArticlesArray.filter(entry => (entry.tyar === "ZMAT")).length;
+            const linkedT800Count:number = fullyLinkedArticlesArray.filter(entry => entry.tyar === "T800").length;
+            const linkedObjectCount:number = new Set(...fullyLinkedArticlesArray.map(entry => entry.objID)).size;
+            const linkedCaracCount:number = new Set(...caracLinks.map(entry => entry.carac)).size;
+            const linkedCaracValueCount:number = caracLinks.reduce((valuesCount, entry) => valuesCount + entry.caracValues.length, 0);
 
             return {
                 articles: {
