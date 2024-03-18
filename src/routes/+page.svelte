@@ -1,6 +1,7 @@
 <script lang="ts">
     import { navStore } from "../stores/navigation-store";
     import bigLogo from '$lib/images/waterair-logo.svg';
+    import { goto } from "$app/navigation";
 
     const { connectUser } = navStore;
 </script>
@@ -54,6 +55,11 @@
         <button class="btn btn-outline-light btn-sm" on:click={ () => connectUser('vendor') }>Connect vendor</button>
         <button class="btn btn-outline-light btn-sm" on:click={ () => connectUser('fake-user') }>Connect fake user</button>
     </menu>
+    {#if $navStore.hasBOAdminAccess}
+    <menu class="MockTechMenu">
+        <button class="btn btn-outline-warning btn-sm" on:click={ () => goto('/sap-csvs') }>MOCK process | Charger extraction SAP</button>
+    </menu>
+    {/if}
 </main>
 
 <style lang="scss">
@@ -84,14 +90,23 @@
             -webkit-backdrop-filter: blur(8px);
     }
 
-    .MockMenu {
+    .MockMenu, .MockTechMenu {
         position:absolute;
-        bottom:4rem;
-        left:4rem;
         padding-inline-start: 0;
         margin-block: 0;
         display:flex;
         gap:0.5rem;
+    }
+
+    .MockMenu {
+        bottom:4rem;
+        left:4rem;
+    }
+
+    .MockTechMenu {
+        flex-direction: row-reverse;
+        bottom:4rem;
+        right:4rem;
     }
 
     .CCBtn {

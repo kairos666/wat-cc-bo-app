@@ -8,7 +8,7 @@
 </script>
 
 <nav id="MainHeader" class="main-header navbar navbar-expand navbar-white navbar-light">
-    <button class="NavMenuToggleBtn" on:click={ toggleNav }><Menu /></button>
+    <button class="NavMenuToggleBtn" on:click={ toggleNav }><Menu color="#fff" /></button>
     <span class="NavMenuSpacer"></span>
     {#if $navStore.hasCCAccess}<button class="PerspectiveBtn PerspectiveBtn-CC" on:click={ () => goto('/CONFCOM') }>CONFCOM</button>{/if}
     {#if $navStore.hasNWAccess}<button disabled class="PerspectiveBtn PerspectiveBtn-NW" on:click={ () => goto('/NEWWATBOOK') }>NEW WATBOOK</button>{/if}
@@ -34,6 +34,7 @@
     #MainHeader {
         display:flex;
         gap:0.5rem;
+        background: linear-gradient(45deg, rgba(51,101,138,1) 0%, rgba(134,187,216,1) 15%, rgba(255,255,255,1) 40%);
         
         .NavMenuSpacer { flex: 1 1 auto; }
     }

@@ -23,14 +23,21 @@ export type SAP_Object = {
 }
 
 // entry types for object to carac link
-export type SAP_RAW_Carac = {
+export type SAP_RAW_Carac_Req3 = {
     objID: string // Objet, index: 1
     caracID: string // Caractéristique, index: 2
     caracValue: string // Valeur de la caractéristique, index: 12
 }
 
+export type SAP_RAW_Carac_Req5 = {
+    caracID: string // Caractéristique, index: 0
+    caracGrp: string // Grp.caractér, index: 1
+    caracValue: string // Valeur de la caractéristique, index: 2
+}
+
 export type SAP_Carac = {
     caracID: string
+    caracGrp: string
     caracValues: { value: string, objLinks: string[] }[]
 }
 
@@ -39,4 +46,30 @@ export type SAP_Prices = {
     articleID: string // article, index: 0
     priceGroup: string // groupe article, index: 5
     price: number // prix base, index: 7
+}
+
+// filter & types
+export type SAP_Article_FiltersAndTypes = {
+    articleID:string
+    isExcluded: boolean
+    type: string
+}
+
+export type SAP_Article_FiltersAndTypes_EXPORT_ENTRY = { 
+    "Article":string, 
+    "Désignation article":string, 
+    "EXCLURE":string, 
+    "TYPE":string 
+}
+
+export type SAP_Carac_Filters = {
+    id?:number // tech, auto incremented by dexie
+    caracID: string
+    caracValue: string
+}
+
+export type SAP_Carac_Filters_EXPORT_ENTRY = { 
+    "Caractéristique":string, 
+    "Valeur de la caractéristique":string, 
+    "EXCLURE":string
 }

@@ -24,3 +24,12 @@
         .TabPanels { flex:1 1 auto; }
     }
 }
+
+#bcc-report-tabs {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    height:100%;
+
+    .tabList { flex:0 0 auto; }
+}
