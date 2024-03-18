@@ -1,8 +1,8 @@
 import { readable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { sapArticles, sapArticlesFilterAndTypes, sapCaracFilters, sapCaracs, sapObjects, sapPrices } from './sap-store';
-import type { SAP_Article, SAP_Article_FiltersAndTypes, SAP_Carac } from '$lib/types/sap-types';
+import type { SAP_Article, SAP_Article_FiltersAndTypes, SAP_Carac, SAP_Object } from '$lib/types/sap-types';
 import _ from 'lodash';
 
 export type ReportData = {
@@ -32,9 +32,21 @@ export type ReportData = {
     prices: {
         priceCount: number
     }
+    analytics: {
+        linkedZmatCount: number
+        linkedT800Count: number
+        linkedObjectCount: number
+        linkedCaracCount: number
+        linkedCaracValueCount: number
+    }
 }
 
 type TypedArticle = SAP_Article & { type: string|null }
+type LinkedArticle = SAP_Article & { 
+    objID: string|null
+    hasCaracLinks: boolean
+    caracLinks: { caracID: string, caracValues: string[] }[]
+}
 
 // db live query report pipe
 const modelizeReportObservable = function():Observable<ReportData> {
@@ -117,6 +129,13 @@ const modelizeReportObservable = function():Observable<ReportData> {
             // prices
             const priceCount:number = prices.length;
 
+            // analytics
+            const linkedZmatCount:number = 0;
+            const linkedT800Count:number = 0;
+            const linkedObjectCount:number = 0;
+            const linkedCaracCount:number = 0;
+            const linkedCaracValueCount:number = 0;
+
             return {
                 articles: {
                     zmatCount,
@@ -143,6 +162,13 @@ const modelizeReportObservable = function():Observable<ReportData> {
                 },
                 prices: {
                     priceCount
+                },
+                analytics: {
+                    linkedZmatCount,
+                    linkedT800Count,
+                    linkedObjectCount,
+                    linkedCaracCount,
+                    linkedCaracValueCount
                 }
             }
         })
@@ -176,6 +202,13 @@ const initReportStore = () => {
         },
         prices: {
             priceCount: 0
+        },
+        analytics: {
+            linkedZmatCount: 0,
+            linkedT800Count: 0,
+            linkedObjectCount: 0,
+            linkedCaracCount: 0,
+            linkedCaracValueCount: 0
         }
     }
 
@@ -183,9 +216,11 @@ const initReportStore = () => {
         // leave early if no access to DB
         if(!browser) return;
         
-        modelizeReportObservable().subscribe({
+        const subscription:Subscription = modelizeReportObservable().subscribe({
             next: state => update(() => state) 
         })
+
+        return () => subscription.unsubscribe();
     });
 
     return store;

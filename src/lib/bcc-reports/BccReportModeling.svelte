@@ -142,82 +142,25 @@
 </div>
 <div class="row">
     <div class="col-lg-6">
-        <div class="card card-outline card-warning">
+        <div class="card" class:card-danger={ $reportStore.analytics.linkedCaracValueCount === 0 } class:card-success={ $reportStore.analytics.linkedCaracValueCount > 0 }>
             <div class="card-header">
-                <h3 class="card-title float-none d-flex justify-content-between">
-                    <span><span class="badge badge-pill badge-warning mr-1">x 5800</span>Articles orphelins</span>
-                    <span><i class="fas fa-shopping-cart text-info"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-link"></i></span>
-                </h3>
+                <h2 class="card-title"><i class="fas fa-shopping-cart"></i><i class="fas fa-arrows-alt-h mx-2"></i><i class="fas fa-link"></i><i class="fas fa-arrows-alt-h mx-2"></i><i class="fas fa-th mr-3"></i> Liaisons complètes</h2>
             </div>
             <div class="card-body">
-                <p class="text-muted">Tous les articles qui n'ont pas de référence d'objet SAP associée. Les articles filtrés ne sont pas pris en compte dans le calcul.</p>
-                <details>
-                    <summary>Liste des articles orphelins</summary>
-                    <div class="bg-light rounded p-2">
-                        <p>00001548, 0007778881, ACC.POMPE, ...</p>
-                    </div>
-                </details>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><b>x { $reportStore.analytics.linkedZmatCount }</b> Articles ZMAT</li>
+                    <li class="list-group-item"><b>x { $reportStore.analytics.linkedT800Count }</b> Articles T800</li>
+                    <li class="list-group-item"><b>x { $reportStore.analytics.linkedObjectCount }</b> Objets</li>
+                    <li class="list-group-item"><b>x { $reportStore.analytics.linkedCaracValueCount }</b> Valeurs de caractéristiques ({ $reportStore.analytics.linkedCaracCount } caractéristiques différentes)</li>
+                </ul>
             </div>
         </div>
     </div>
     <div class="col-lg-6">
-        <div class="card card-outline card-warning">
-            <div class="card-header">
-                <h3 class="card-title float-none d-flex justify-content-between">
-                    <span><span class="badge badge-pill badge-warning mr-1">x 1245</span>Articles orphelins bis</span>
-                    <span><i class="fas fa-shopping-cart text-info"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-link"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-th"></i></span>
-                </h3>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Tous les articles, ayant une référence objet mais qui n'ont pas de caractéristiques SAP associées. Les articles filtrés ne sont pas pris en compte dans le calcul.</p>
-                <details>
-                    <summary>Liste des articles orphelins</summary>
-                    <div class="bg-light rounded p-2">
-                        <p>00001548, 0007778881, ACC.POMPE, ...</p>
-                    </div>
-                </details>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-6">
-        <div class="card card-outline card-success">
-            <div class="card-header">
-                <h3 class="card-title float-none d-flex justify-content-between">
-                    <span><span class="badge badge-pill badge-success mr-1">x 0</span>Objets inutiles</span>
-                    <span><i class="fas fa-shopping-cart"></i><i class="fas fa-long-arrow-alt-right text-danger mx-2"></i><i class="fas fa-link text-info"></i><i class="fas fa-long-arrow-alt-left text-danger mx-2"></i><i class="fas fa-th"></i></span>
-                </h3>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Tous les obejts SAP qui ne sont ni associés à des articles, ni a des caractéristiques fournies. Tous les articles et caractéristiques sont pris en compte, les filtres ne s'appliquent pas.</p>
-                <details>
-                    <summary>Liste des objets inutiles</summary>
-                    <div class="bg-light rounded p-2">
-                        <p>00001548, 0007778881, ACC.POMPE, ...</p>
-                    </div>
-                </details>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="card card-outline card-info">
-            <div class="card-header">
-                <h3 class="card-title float-none d-flex justify-content-between">
-                    <span><span class="badge badge-pill badge-info mr-1">x 72</span>Caractéristiques associées au produit racine</span>
-                    <span><i class="fas fas fa-star"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-link"></i><i class="fas fa-long-arrow-alt-right mx-2"></i><i class="fas fa-th text-info"></i></span>
-                </h3>
-            </div>
-            <div class="card-body">
-                <p class="text-muted">Toutes les caractéristiques, non filtrées, qui ont au moins une valeur associée au produit racine.</p>
-                <details>
-                    <summary>Liste des caractéristiques du produit racine</summary>
-                    <div class="bg-light rounded p-2">
-                        <p>00001548, 0007778881, ACC.POMPE, ...</p>
-                    </div>
-                </details>
-            </div>
-        </div>
+        <p><b>Les articles, caractéristiques et valeurs de caractéristiques filtrées sont ignorés</b> dans les évaluations ci-contre. Faites attention à ne pas casser des liaisons utiles en filtrant les éléments.</p>
+        <p><b>Les tarifs ne sont pas pris en compte</b>, même si tous les articles doivent avoir un tarif, comme nous savons que tous les tarifs ne sont pas extraits de SAP, on ignore cette dimension pour l'instant. Par contre il faudra que tous les articles retenus soient enrichi pour avoir au moins un tarif simple.</p>
+        <p>Attention, il y'a des caractéristiques techniques qui ne seront liées au reste du configurateur qu'après enrichissement. Les caractéristiques directement liées à un article ne sont donc pas les seules qui seront conservées pour la modélisation.</p>
+        <div class="alert alert-primary" role="alert">Pour le bon fonctionnement du configurateur commercial, seuls les éléments ayant une liaison complète seront utilisés. Les articles orphelins sont ignorés pour l'étape d'enrichissement.</div>
     </div>
 </div>
 {:else}
